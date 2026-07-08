@@ -7,7 +7,7 @@ export default function AdUnit({ slot, format = "auto", style = {} }) {
   const pushed = useRef(false)
 
   useEffect(() => {
-    if (pushed.current) return
+    if (!slot || pushed.current) return
     try {
       // window.adsbygoogle is injected by the script in index.html
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
@@ -15,7 +15,11 @@ export default function AdUnit({ slot, format = "auto", style = {} }) {
     } catch (e) {
       // script not loaded yet or blocked by an adblocker — silently skip
     }
-  }, [])
+  }, [slot])
+
+  // no real ad-slot ID yet (pre-AdSense-approval) — render nothing rather
+  // than ship an <ins> tag with an invalid empty data-ad-slot
+  if (!slot) return null
 
   return (
     <div className="ad-unit-wrap" style={style}>

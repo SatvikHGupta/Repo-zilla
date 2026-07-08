@@ -1,12 +1,20 @@
-// Wrapper around `vite build` that force-exits once the build actually finishes.
-// Some plugin/dependency in this project's build chain leaves a background
-// handle open (worker thread / keep-alive socket) after vite's build() promise
-// resolves, so the plain `vite` CLI never exits on its own — it just hangs
-// until Vercel's 45-minute build timeout kills it. By the time build()
-// resolves, all output (dist/, prerendered pages) is already fully written
-// to disk, so forcing exit here is safe.
 import { build } from 'vite'
 
-await build()
-console.log('Build finished — exiting explicitly.')
-process.exit(0)
+// vite build (with vite-prerender-plugin) leaves a background handle open
+// after finishing all real work (a worker thread + idle keep-alive sockets),
+// which keeps Node's event loop alive indefinitely. All output is already
+// fully written to disk by the time build() resolves, so it's safe to force
+// the process to exit here rather than let it hang until a host's build
+// timeout kills it.
+async function run() {
+  try {
+    await build()
+    console.log('\nBuild finished, exiting.')
+    process.exit(0)
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
+}
+
+run()

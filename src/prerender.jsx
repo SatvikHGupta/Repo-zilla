@@ -1,6 +1,9 @@
 import { renderToString } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import AppRouter from './AppRouter.jsx'
+import { getAllPosts } from './lib/blog.js'
+
+const BLOG_POSTS = getAllPosts()
 
 // per-route meta - title, description, canonical, OG tags
 // these get injected into <head> of each pre-rendered HTML file
@@ -10,6 +13,11 @@ const ROUTE_META = {
     description: "This page doesn't exist. Browse the Repo Zilla catalogue of 34,787 curated GitHub repositories instead.",
     og: { type: 'website' },
     noindex: true,
+  },
+  '/blog': {
+    title: 'Blog - Repo Zilla',
+    description: 'Data-driven writing on GitHub repos, open source trends, and the dev tools worth paying attention to in 2026 - pulled from our own catalog of 34,787 repositories.',
+    og: { type: 'website' },
   },
   '/': {
     title: 'Repo Zilla - Curated GitHub Repository Catalog',
@@ -98,6 +106,16 @@ const ROUTE_META = {
   },
 }
 
+// every blog post gets its own route meta generated from its frontmatter -
+// no manual edit needed here when a new post is added
+for (const post of BLOG_POSTS) {
+  ROUTE_META[`/blog/${post.slug}`] = {
+    title: `${post.title} - Repo Zilla Blog`,
+    description: post.excerpt,
+    og: { type: 'article' },
+  }
+}
+
 const BASE_URL = 'https://repo-zilla.vercel.app'
 
 function buildHeadElements(url) {
@@ -137,10 +155,12 @@ export async function prerender(data) {
 
   const isExplorePage = url.startsWith('/explore/')
   const exploreSlug = isExplorePage ? url.replace('/explore/', '') : null
+  const isBlogPost = url.startsWith('/blog/')
+  const blogSlug = isBlogPost ? url.replace('/blog/', '') : null
   const meta = ROUTE_META[url] || ROUTE_META['/']
 
   // JSON-LD structured data - per-route
-  const jsonLd = buildJsonLd(url, exploreSlug)
+  const jsonLd = buildJsonLd(url, exploreSlug, blogSlug)
   const headElements = buildHeadElements(url)
 
   if (jsonLd) {
@@ -177,7 +197,7 @@ const EXPLORE_SCHEMA_DATA = {
   'fullstack':     { name: 'Fullstack Repositories',     desc: 'Curated fullstack repositories - MERN, T3 stack, Next.js, and complete web application boilerplates.' },
 }
 
-function buildJsonLd(url, exploreSlug) {
+function buildJsonLd(url, exploreSlug, blogSlug) {
   if (url === '/') {
     return {
       '@context': 'https://schema.org',
@@ -195,6 +215,70 @@ function buildJsonLd(url, exploreSlug) {
         target: 'https://repo-zilla.vercel.app/catalogue?q={search_term_string}',
         'query-input': 'required name=search_term_string',
       },
+    }
+  }
+
+  if (url === '/blog') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      name: 'Repo Zilla Blog',
+      url: 'https://repo-zilla.vercel.app/blog',
+      description: 'Data-driven writing on GitHub repos, open source trends, and dev tooling, built on our own catalog of 34,787 repositories.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: 'Repo Zilla',
+        url: 'https://repo-zilla.vercel.app',
+      },
+      author: {
+        '@type': 'Person',
+        name: 'Satvik Hemant Gupta',
+        url: 'https://github.com/SatvikHGupta',
+      },
+      blogPost: BLOG_POSTS.map((p) => ({
+        '@type': 'BlogPosting',
+        headline: p.title,
+        url: `https://repo-zilla.vercel.app/blog/${p.slug}`,
+        datePublished: p.date,
+      })),
+    }
+  }
+
+  if (blogSlug) {
+    const post = BLOG_POSTS.find((p) => p.slug === blogSlug)
+    if (post) {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt,
+        url: `https://repo-zilla.vercel.app/blog/${post.slug}`,
+        datePublished: post.date,
+        dateModified: post.date,
+        author: {
+          '@type': 'Person',
+          name: 'Satvik Hemant Gupta',
+          url: 'https://github.com/SatvikHGupta',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Repo Zilla',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://repo-zilla.vercel.app/icon.png',
+          },
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `https://repo-zilla.vercel.app/blog/${post.slug}`,
+        },
+        keywords: post.tags.join(', '),
+        isPartOf: {
+          '@type': 'Blog',
+          name: 'Repo Zilla Blog',
+          url: 'https://repo-zilla.vercel.app/blog',
+        },
+      }
     }
   }
 
