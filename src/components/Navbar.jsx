@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom"
+
 const LAYER_LABELS = {
   3: { label: "SHELF", sublabel: "active picks", color: "#f59e0b" },
   2: { label: "PINNED", sublabel: "best of best", color: "#10b981" },
@@ -6,15 +8,16 @@ const LAYER_LABELS = {
 }
 
 export default function Navbar({ theme, toggleTheme, stats, search, setSearch, activeLayer, setActiveLayer, layerData }) {
+  const navigate = useNavigate()
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <div className="nav-logo">
+        <button className="nav-logo" onClick={() => navigate("/")} title="Go to homepage">
           <span className="logo-bracket">[</span>
           <span>REPO</span>
           <span className="logo-accent">ZILLA</span>
           <span className="logo-bracket">]</span>
-        </div>
+        </button>
         <div className="layer-tabs">
           {[3, 2, 1, 0].map(l => (
             <button

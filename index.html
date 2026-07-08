@@ -2,14 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="aR-lIktOmSNy6kmietwVkzyD4C_ozYN0gH33nPe5Mg0" />
+
+    <!-- Every real route gets its title/description/canonical/OG/JSON-LD
+         injected per-page by src/prerender.jsx at build time. Nothing
+         page-specific is hardcoded here — that caused duplicate/conflicting
+         canonical + title + OG tags on every prerendered page. -->
+    <meta name="author" content="Satvik Hemant Gupta" />
+    <meta name="keywords" content="github repositories, open source, curated repos, best github projects, developer tools, react, python, go, rust, devops, ai ml" />
+
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="icon" type="image/png" sizes="512x512" href="/icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Repo Zilla</title>
-    <meta name="description" content="Catalogue for top ~33k GitHub repositories, curated by stars, forks, and activity." />
+    <link rel="apple-touch-icon" href="/icon.png" />
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7868765511569407" crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="root"></div>
+    <script type="module" prerender src="/src/prerender.jsx"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -13,8 +13,8 @@ const LAYER_FILES = {
   3: "/data/layer3.json",
 }
 
-export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark")
+export default function App({ initialType }) {
+  const [theme, setTheme] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("theme") || "dark" : "dark"))
   const [loading, setLoading] = useState(true)
   const [loadingMsg, setLoadingMsg] = useState("initializing...")
   const [loadingPct, setLoadingPct] = useState(0)
@@ -27,15 +27,21 @@ export default function App() {
   const [userPins, setUserPins] = useState({})
   const [userShelf, setUserShelf] = useState({})
   const [userTags, setUserTags] = useState({})
-  // filters
+  // filters - initialType prop takes priority (from explore pages), then URL param fallback
   const [search, setSearch] = useState("")
-  const [filters, setFilters] = useState({
-    languages: [],
-    projectTypes: [],
-    categories: [],
-    starsMin: 0,
-    starsMax: Infinity,
-    sortBy: "score",
+  const [filters, setFilters] = useState(() => {
+    const type = initialType
+      || (typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("type")
+        : null)
+    return {
+      languages: [],
+      projectTypes: type ? [type] : [],
+      categories: [],
+      starsMin: 0,
+      starsMax: Infinity,
+      sortBy: "score",
+    }
   })
 
   // theme toggle

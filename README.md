@@ -1,74 +1,80 @@
 # Repo Zilla
 
-> Catalogue for the top ~33,000 GitHub repositories - curated personally by stars, forks, and activity.
+> A curated, scored catalogue of 34,787 GitHub repositories - browse by tier, filter, search, and keep your own pins locally.
 
-**Live:** [https://repo-zilla.vercel.app/]
-
----
-
-## Overview
-
-Repo Zilla is a client-side SPA for browsing a hand-curated catalogue of GitHub's most valuable open source repositories. All data is pre-processed and served as static JSON - there is no backend, no API calls on the critical path, and no auth.
-
-The catalogue is organised into four quality layers with IndexedDB caching so repeat visits are instant.
+**Live:** https://repo-zilla.vercel.app/
 
 ---
 
-## Architecture
+## What this is
+
+A client-side SPA for browsing a pre-scored catalogue of open source repos. No backend, no auth, no API calls on the critical path - everything ships as static JSON and gets cached in IndexedDB after first load, so repeat visits are instant.
+
+See the [About page](https://repo-zilla.vercel.app/about) for how the scoring works.
+
+---
+
+## Project structure
 
 ```
 public/
   data/
-    stats.json       # catalogue metadata (total counts per layer)
-    layer0.json      # full pool - all ~33k repos
-    layer1.json      # verified quality library - ~7k repos
-    layer2.json      # pinned - best of the best
-    layer3.json      # shelf - active picks
-  icon.svg           # app icon (SVG)
-  icon.png           # app icon (512x512 PNG)
+    stats.json      # totals per layer, language/type breakdowns
+    layer0.json      # full pool - ~26k repos (post-verification)
+    layer1.json      # verified - 7,000 repos
+    layer2.json      # pinned - 1,750 repos
+    layer3.json      # shelf - 250 repos
+  icon.svg
+  icon.png
+  robots.txt
+  sitemap.xml
+  ads.txt
 
 src/
   components/
-    LoadingScreen.jsx  # progressive load UI with percentage
-    Navbar.jsx         # layer tabs, search bar, theme toggle
-    Sidebar.jsx        # filter panel (language, type, category, sort)
-    RepoGrid.jsx       # card grid with Fuse.js fuzzy search
-    RepoCard.jsx       # individual repo card with pin/shelf actions
-    RepoDetail.jsx     # slide-in panel with README fetch + info tab
-  db.js               # IndexedDB wrapper via idb (layers, user data, readmes)
-  App.jsx             # root state - layers, filters, user overrides
+    LoadingScreen.jsx   # progressive load UI with percentage
+    Navbar.jsx           # layer tabs, search, theme toggle
+    Sidebar.jsx           # language/type/category filters, sort
+    RepoGrid.jsx          # card grid, Fuse.js fuzzy search
+    RepoCard.jsx           # individual card, pin/shelf actions
+    RepoDetail.jsx         # slide-in panel - README fetch + info tab
+    AdUnit.jsx              # manual AdSense slot (currently unused - site runs on Auto Ads)
+    Footer.jsx
+  pages/                     # HomePage, ExplorePage, AboutPage, PrivacyPage, ContactPage, etc.
+  hooks/
+    usePageMeta.js             # per-page title/meta tag hook
+  db.js                        # IndexedDB wrapper (idb) - layers, pins/shelf, README cache
+  App.jsx                       # root state - layers, filters, routing
   main.jsx
-  index.css           # CSS custom properties, full theming, component styles
+  index.css                      # CSS custom properties, theming, all component styles
 ```
 
-### Data Layer Model
+### The four layers
 
-| Layer | Label    | Description                      | Approximate Size |
-|-------|----------|----------------------------------|-----------------|
-| 3     | SHELF    | Active personal picks            | Small            |
-| 2     | PINNED   | Best of the best                 | Medium           |
-| 1     | VERIFIED | Quality library - default view   | ~7k repos        |
-| 0     | ALL      | Full pool, background-loaded     | ~33k repos       |
+| Layer | Label    | Size        | What it is                          |
+|-------|----------|-------------|--------------------------------------|
+| 0     | ALL      | ~26k repos  | Full pool, post-verification         |
+| 1     | VERIFIED | 7,000 repos | Cleared every quality check          |
+| 2     | PINNED   | 1,750 repos | Highest scorers across all categories|
+| 3     | SHELF    | 250 repos   | Curated top picks per category       |
 
-Layers 3 and 2 load first, then layer 1 (the default view), then layer 0 silently in the background so the UI becomes interactive fast regardless of the full dataset size.
+Layers 3 and 2 load first (small, instant), then layer 1 (the default view), then layer 0 loads silently in the background.
 
-### Caching Strategy
+### Caching
 
-All layer JSON is cached in IndexedDB after first fetch - subsequent loads skip the network entirely. Per-repo README fetches are also cached. User state (pins, shelf, tags) persists in IndexedDB across sessions.
+Every layer file is cached in IndexedDB after first fetch - later visits skip the network. Per-repo READMEs are cached the same way. User state (pins, shelf, tags) persists across sessions in IndexedDB; theme preference persists in localStorage.
 
 ---
 
-## Data Files
+## Data files
 
-The `public/data/` directory is not included in the repository. You must generate and place these files yourself before running or deploying.
-
-### Expected Formats
+`public/data/*.json` are already included in this repo and tracked in git - the app works out of the box, no generation step required. If you want to regenerate them from the GitHub API yourself, the expected shapes are:
 
 **`stats.json`**
 ```json
 {
-  "total": 33000,
-  "layers": { "0": 33000, "1": 7000, "2": 500, "3": 50 }
+  "total": 34787,
+  "layers": { "0": 25787, "1": 7000, "2": 1750, "3": 250 }
 }
 ```
 
@@ -92,80 +98,61 @@ The `public/data/` directory is not included in the repository. You must generat
 ]
 ```
 
-The `scripts/` directory contains the data pipeline used to generate these files from the GitHub API.
-
 ---
 
 ## Stack
 
-- **React 19** + **Vite 8** - fast dev server and optimised production builds
-- **Fuse.js** - client-side fuzzy search across name, description, topics, language, category
-- **idb** - typed IndexedDB wrapper for layer caching and user state persistence
-- **Space Mono + Syne** - typography
-- No CSS framework - hand-written CSS custom properties with full dark/light theming
+- **React 19** + **Vite 8** - dev server + optimized static build, prerendered per-route
+- **Fuse.js** - client-side fuzzy search (name, description, topics, language, category)
+- **idb** - typed IndexedDB wrapper for layer caching + user state
+- **Space Mono + Space Grotesk** - typography
+- No CSS framework - hand-written CSS custom properties, full dark/light theming
 
 ---
 
-## Getting Started
+## Getting started
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Add your data files to public/data/
-#    Required: stats.json, layer0.json, layer1.json, layer2.json, layer3.json
-
-# 3. Add icons to public/
-#    Required: icon.svg, icon.png (512x512)
-
-# 4. Dev server
-npm run dev
-
-# 5. Production build
-npm run build
-npm run preview
+npm run dev        # local dev server
+npm run build       # production build -> dist/
+npm run preview      # serve the production build locally
 ```
+
+Data and icons are already in `public/` - nothing else to configure to run locally.
 
 ---
 
 ## Deployment
 
-The production build outputs a fully static `dist/` directory. Deploy to any static host:
+`npm run build` outputs a static `dist/` directory. Deploy anywhere that serves static files:
 
-- **Vercel** - `vercel --prod` or connect the repo, set output directory to `dist`
-- **Netlify** - drag `dist/` into the dashboard or connect repo with build command `npm run build`
-- **GitHub Pages** - push `dist/` to `gh-pages` branch
+- **Vercel** - connect the repo, output directory `dist` (this is what's live)
+- **Netlify** - drag `dist/` into the dashboard, or connect the repo with build command `npm run build`
+- **GitHub Pages** - push `dist/` to a `gh-pages` branch
 
-> Data files in `public/data/` are large (layer0 alone is ~30MB uncompressed). Consider hosting behind a CDN or enabling Vite's compression plugin if load time is a concern.
-
----
-
-## Scripts
-
-The `scripts/` directory contains the data pipeline. It runs separately from the app and is not part of the Vite build.
-
-| Script               | Purpose                                                    |
-|---------------------|------------------------------------------------------------|
-| `fetch.js`          | Fetch repos from GitHub API with checkpoint/resume support |
-| `score.js`          | Score and rank repos; assign quality layers                |
-| `prepare_data.js`   | Split scored data into layer JSON files + stats.json       |
-| `fetch_readmes.js`  | Pre-fetch READMEs (optional - app fetches lazily on demand)|
-| `peak.js`           | Inspect checkpoint state during pipeline runs              |
+`public/data/` is ~24MB total. Fine as-is on Vercel/Netlify's CDN; if you're self-hosting, put it behind a CDN or enable compression.
 
 ---
 
 ## Features
 
-- **Layer navigation** - switch between SHELF / PINNED / VERIFIED / ALL with instant tab switching and live counts
-- **Fuzzy search** - Fuse.js search across name, description, topics, language, category
-- **Filter panel** - filter by programming language, project type, category; sort by score / stars / forks / recency
-- **Pin and shelf** - per-user overrides persisted in IndexedDB, survive browser refresh
-- **Repo detail panel** - slide-in drawer fetching README from `raw.githubusercontent.com`, tries `main` / `master` / `dev` / `develop` branches, falls back to description
-- **Dark / light theme** - toggle with preference persisted in localStorage
-- **Offline-friendly** - all layer data and READMEs cached in IndexedDB after first load
+- Layer navigation - SHELF / PINNED / VERIFIED / ALL, instant tab switching, live counts
+- Fuzzy search across name, description, topics, language, category
+- Filter by language / project type / category, sort by score / stars / forks / recency
+- Pin and shelf - personal overrides, persisted in IndexedDB, survive refresh
+- Repo detail panel - fetches README straight from `raw.githubusercontent.com`, tries `main` / `master` / `dev` / `develop`, falls back to the repo description if none exist
+- Dark / light theme, persisted in localStorage
+- Fully offline-capable after first load - all layer data and viewed READMEs are cached
+
+---
+
+## Ads
+
+The site runs Google AdSense via Auto Ads (script tag in `index.html`). `AdUnit.jsx` exists for manual slot placement but isn't wired into any page yet.
 
 ---
 
 ## License
 
-See [LICENSE](MIT License).
+See [LICENSE](LICENSE).

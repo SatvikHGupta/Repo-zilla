@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /explore/
+Disallow: /catalogue?*
+
+# don't let bots index query-param filtered catalogue URLs
+# canonical content lives at /explore/:slug pages
+
+Sitemap: https://repo-zilla.vercel.app/sitemap.xml
