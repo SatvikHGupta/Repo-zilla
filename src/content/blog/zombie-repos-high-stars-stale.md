@@ -8,11 +8,11 @@ tags: [data, dependencies, maintenance, risk]
 
 # 3,795 Repos in Our Catalog Have 1,000+ Stars and Haven't Been Touched in 2+ Years. Atom Is One of Them.
 
-Of the 23,243 repos in our catalog with 1,000 or more stars, **3,795 of them - 16.3%** - haven't had a commit in over two years. That's not a rounding error. That's roughly **1 in 6** popular, trusted-looking repos sitting completely dormant while still accumulating stars, forks, and dependents who may not realize nobody's home.
+Of the 23,243 repos in our catalog with 1,000 or more stars, **3,795 of them (16.3%)** haven't had a commit in over two years. That's not a rounding error. That's roughly **1 in 6** popular, trusted-looking repos sitting completely dormant while still accumulating stars, forks, and dependents who may not realize nobody's home.
 
 ## The direct answer
 
-We define a "zombie repo" as: 1,000+ stars (a real trust signal) combined with 730+ days since the last commit (genuinely abandoned, not just quiet). By that definition, 3,795 repos in our dataset qualify - 10.9% of our entire catalog.
+We define a "zombie repo" as: 1,000+ stars (a real trust signal) combined with 730+ days since the last commit (genuinely abandoned, not just quiet). By that definition, 3,795 repos in our dataset qualify, or 10.9% of our entire catalog.
 
 ## The top 20 by stars
 
@@ -41,18 +41,18 @@ We define a "zombie repo" as: 1,000+ stars (a real trust signal) combined with 7
 
 ## Why this list is actually reassuring, not alarming
 
-Look closely at the pattern: **atom/atom** and **angular/angular.js** are on this list for a completely legitimate reason - both were officially deprecated (Atom by GitHub in favor of VS Code, AngularJS 1.x in favor of modern Angular). Their star counts are historical credit, not a current recommendation. The zombie-detection method works exactly as intended here - it correctly flags "this used to matter and doesn't get updates anymore," without needing to know *why*.
+Look closely at the pattern: **atom/atom** and **angular/angular.js** are on this list for a completely legitimate reason. Both were officially deprecated (Atom by GitHub in favor of VS Code, AngularJS 1.x in favor of modern Angular). Their star counts are historical credit, not a current recommendation. The zombie-detection method works exactly as intended here; it correctly flags "this used to matter and doesn't get updates anymore," without needing to know *why*.
 
-Others on the list are reference material that was never meant to be "maintained" in the traditional sense - **normalize.css**, **pure-bash-bible**, **awesome-courses**, various "roadmap" and cheat-sheet repos. A reference doc doesn't need weekly commits to stay useful. Stale ≠ useless here; it just means don't expect support.
+Others on the list are reference material that was never meant to be "maintained" in the traditional sense: **normalize.css**, **pure-bash-bible**, **awesome-courses**, various "roadmap" and cheat-sheet repos. A reference doc doesn't need weekly commits to stay useful. Stale ≠ useless here; it just means don't expect support.
 
-The genuinely risky ones on this kind of list are **libraries meant to be actively depended upon** in production - that's where 2+ years of silence should actually change your evaluation, not documentation or educational content.
+The genuinely risky ones on this kind of list are **libraries meant to be actively depended upon** in production. That's where 2+ years of silence should actually change your evaluation, not documentation or educational content.
 
 ## Forks tell a slightly different story than stars
 
-Median forks among zombie repos: **371**. Median forks across the whole catalog: **210**. Zombie repos are actually *more* forked than average - which makes sense: people fork dead-but-useful projects specifically because they plan to maintain their own patch on top, since the original clearly isn't coming back.
+Median forks among zombie repos: **371**. Median forks across the whole catalog: **210**. Zombie repos are actually *more* forked than average, which makes sense: people fork dead-but-useful projects specifically because they plan to maintain their own patch on top, since the original clearly isn't coming back.
 
 ## The actual takeaway for picking dependencies
 
-Before adding any library with impressive stars, check two things, not one: the star count *and* the last-commit date. A repo with 40,000 stars and no commits in 3 years isn't automatically bad - but it means you're the maintainer now, whether you signed up for that or not.
+Before adding any library with impressive stars, check two things, not one: the star count *and* the last-commit date. A repo with 40,000 stars and no commits in 3 years isn't automatically bad, but it does mean you're the maintainer now, whether you signed up for that or not.
 
 *Data pulled from our own catalog of 34,787 scored and categorized GitHub repositories.*

@@ -1,8 +1,28 @@
 import { renderToString } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import AppRouter from './AppRouter.jsx'
-import { getAllPosts } from './lib/blog.js'
+import { getAllPosts, getPostBody } from './lib/blog.js'
+import { CATEGORIES } from './data/categories.js'
 
+// A note on why this file must never contain unpublished-post data:
+// vite-prerender-plugin adds this file as a real build input alongside the
+// client entry (so it can execute it during the build), and because it
+// shares module graph with the client entry (both import AppRouter.jsx),
+// Vite's preload-hint generator injects a <link rel="modulepreload"> for
+// this file's own chunk into EVERY prerendered HTML page - meaning every
+// visitor's browser proactively fetches it. That's harmless for the public
+// route metadata this file builds, but it means anything this file imports
+// is effectively public the moment it's deployed.
+//
+// (fs-based reads were tried here as an alternative to importing blog.js at
+// all, to sidestep this - but Vite bundles this file through its *client*
+// build pipeline, which externalizes node:fs/node:path/node:url rather than
+// providing real implementations, and the build fails outright. So the fix
+// has to be "make the data itself safe," not "avoid importing it here":
+// src/lib/blog-meta.generated.json - which blog.js imports, and which this
+// file transitively pulls in via getAllPosts()/getPostBody() below - is now
+// filtered to already-published posts at generation time, in vite.config.js.
+// See the comment there for what that trades off.)
 const BLOG_POSTS = getAllPosts()
 
 // per-route meta - title, description, canonical, OG tags
@@ -16,7 +36,7 @@ const ROUTE_META = {
   },
   '/blog': {
     title: 'Blog - Repo Zilla',
-    description: 'Data-driven writing on GitHub repos, open source trends, and the dev tools worth paying attention to in 2026 - pulled from our own catalog of 34,787 repositories.',
+    description: 'Data-driven writing on GitHub repos, open source trends, and the dev tools worth paying attention to in 2026, pulled straight from our catalog of 34,787 repositories.',
     og: { type: 'website' },
   },
   '/': {
@@ -41,69 +61,21 @@ const ROUTE_META = {
   },
   '/explore/backend': {
     title: 'Best Backend GitHub Repositories - Repo Zilla',
-    description: 'Explore 10,035 curated backend GitHub repositories - REST APIs, gRPC, microservices, Express, FastAPI, Django, Spring Boot, Go Gin, Rust Axum, and more. Ranked by stars and activity.',
+    description: 'Explore 10,035 curated backend GitHub repositories: REST APIs, gRPC, microservices, Express, FastAPI, Django, Spring Boot, Go Gin, Rust Axum, and more. Ranked by stars and activity.',
     og: { type: 'website' },
   },
-  '/explore/ai-ml': {
-    title: 'Best AI & Machine Learning GitHub Repositories - Repo Zilla',
-    description: 'Explore 4,570 curated AI and machine learning GitHub repositories - LLMs, deep learning, computer vision, NLP, PyTorch, TensorFlow, LangChain, and generative AI projects.',
+}
+
+// every /explore/:slug route gets its route meta generated from the shared
+// category data (src/data/categories.js) - no manual edit needed here when
+// a category's copy or count changes, or a new category is added
+for (const cat of CATEGORIES) {
+  if (cat.slug === 'backend') continue // already set above with its own key
+  ROUTE_META[`/explore/${cat.slug}`] = {
+    title: cat.metaTitle,
+    description: cat.metaDesc,
     og: { type: 'website' },
-  },
-  '/explore/frontend': {
-    title: 'Best Frontend GitHub Repositories - Repo Zilla',
-    description: 'Explore 4,178 curated frontend GitHub repositories - React, Vue, Angular, Svelte, Next.js, Vite, UI frameworks, component libraries, and web tooling.',
-    og: { type: 'website' },
-  },
-  '/explore/devops': {
-    title: 'Best DevOps GitHub Repositories - Repo Zilla',
-    description: 'Explore 2,552 curated DevOps GitHub repositories - Docker, Kubernetes, Terraform, Ansible, CI/CD pipelines, monitoring, Helm charts, and infrastructure-as-code.',
-    og: { type: 'website' },
-  },
-  '/explore/js-general': {
-    title: 'Best JavaScript GitHub Repositories - Repo Zilla',
-    description: 'Explore 3,435 curated JavaScript and TypeScript GitHub repositories - runtimes, utilities, build tools, Node.js packages, and general JS/TS ecosystem projects.',
-    og: { type: 'website' },
-  },
-  '/explore/python': {
-    title: 'Best Python GitHub Repositories - Repo Zilla',
-    description: 'Explore 1,808 curated Python GitHub repositories - scripts, automation tools, data processing, scientific computing, CLI tools, and general-purpose Python libraries.',
-    og: { type: 'website' },
-  },
-  '/explore/systems': {
-    title: 'Best Systems Programming GitHub Repositories - Repo Zilla',
-    description: 'Explore 1,611 curated systems programming GitHub repositories - C, C++, Rust, operating systems, compilers, low-level tooling, and performance-critical projects.',
-    og: { type: 'website' },
-  },
-  '/explore/mobile': {
-    title: 'Best Mobile GitHub Repositories - Repo Zilla',
-    description: 'Explore 1,571 curated mobile GitHub repositories - React Native, Flutter, native iOS and Android, Dart packages, and cross-platform mobile development tools.',
-    og: { type: 'website' },
-  },
-  '/explore/database': {
-    title: 'Best Database GitHub Repositories - Repo Zilla',
-    description: 'Explore 1,325 curated database GitHub repositories - ORMs, query builders, migration tools, PostgreSQL, MongoDB, Redis, MySQL drivers, and database tooling.',
-    og: { type: 'website' },
-  },
-  '/explore/learning': {
-    title: 'Best Learning & Developer Resources on GitHub - Repo Zilla',
-    description: 'Explore 1,216 curated developer learning repositories on GitHub - roadmaps, cheatsheets, interview prep, algorithm guides, and structured learning resources.',
-    og: { type: 'website' },
-  },
-  '/explore/auth-security': {
-    title: 'Best Auth & Security GitHub Repositories - Repo Zilla',
-    description: 'Explore 654 curated authentication and security GitHub repositories - OAuth, JWT, encryption libraries, penetration testing tools, and security frameworks.',
-    og: { type: 'website' },
-  },
-  '/explore/ui-css': {
-    title: 'Best UI & CSS GitHub Repositories - Repo Zilla',
-    description: 'Explore 802 curated UI and CSS GitHub repositories - component libraries, design systems, icon sets, CSS frameworks, animations, and styling tools.',
-    og: { type: 'website' },
-  },
-  '/explore/fullstack': {
-    title: 'Best Fullstack GitHub Repositories - Repo Zilla',
-    description: 'Explore 483 curated fullstack GitHub repositories - MERN, MEAN, T3 stack, Next.js fullstack, boilerplates, and complete web application frameworks.',
-    og: { type: 'website' },
-  },
+  }
 }
 
 // every blog post gets its own route meta generated from its frontmatter -
@@ -119,7 +91,8 @@ for (const post of BLOG_POSTS) {
 const BASE_URL = 'https://repo-zilla.vercel.app'
 
 function buildHeadElements(url) {
-  const meta = ROUTE_META[url] || ROUTE_META['/']
+  const fallback = url.startsWith('/blog/') ? ROUTE_META['/404'] : ROUTE_META['/']
+  const meta = ROUTE_META[url] || fallback
   const canonical = `${BASE_URL}${url}`
 
   const elements = new Set([
@@ -146,6 +119,18 @@ function buildHeadElements(url) {
 
 export async function prerender(data) {
   const url = data.url || '/'
+  const isBlogPost = url.startsWith('/blog/')
+  const blogSlug = isBlogPost ? url.replace('/blog/', '') : null
+
+  // Body loading is lazy/code-split (see src/lib/blog.js) so BlogPostPage
+  // can't rely on it being available synchronously during renderToString,
+  // which doesn't wait for async effects. Pre-fetch it into the shared
+  // cache here first - only happens for slugs getAllPosts() actually
+  // returned, i.e. already-published ones, so an unpublished post's body
+  // chunk is never touched during the build at all.
+  if (blogSlug && BLOG_POSTS.some((p) => p.slug === blogSlug)) {
+    await getPostBody(blogSlug)
+  }
 
   const html = renderToString(
     <MemoryRouter initialEntries={[url]}>
@@ -155,9 +140,8 @@ export async function prerender(data) {
 
   const isExplorePage = url.startsWith('/explore/')
   const exploreSlug = isExplorePage ? url.replace('/explore/', '') : null
-  const isBlogPost = url.startsWith('/blog/')
-  const blogSlug = isBlogPost ? url.replace('/blog/', '') : null
-  const meta = ROUTE_META[url] || ROUTE_META['/']
+  const fallback = isBlogPost ? ROUTE_META['/404'] : ROUTE_META['/']
+  const meta = ROUTE_META[url] || fallback
 
   // JSON-LD structured data - per-route
   const jsonLd = buildJsonLd(url, exploreSlug, blogSlug)
@@ -181,21 +165,9 @@ export async function prerender(data) {
 }
 
 // ---- JSON-LD per route ----
-const EXPLORE_SCHEMA_DATA = {
-  'backend':       { name: 'Backend Repositories',       desc: 'Curated backend GitHub repositories - REST APIs, microservices, Go, Rust, Java, Python, and Node.js servers.' },
-  'ai-ml':         { name: 'AI & ML Repositories',       desc: 'Curated AI and machine learning repositories - LLMs, deep learning, NLP, computer vision, and generative AI.' },
-  'frontend':      { name: 'Frontend Repositories',      desc: 'Curated frontend GitHub repositories - React, Vue, Angular, Svelte, Next.js, and UI frameworks.' },
-  'devops':        { name: 'DevOps Repositories',        desc: 'Curated DevOps repositories - Docker, Kubernetes, Terraform, CI/CD, and infrastructure-as-code.' },
-  'js-general':    { name: 'JavaScript Repositories',    desc: 'Curated JavaScript and TypeScript repositories - runtimes, build tools, and general JS/TS ecosystem.' },
-  'python':        { name: 'Python Repositories',        desc: 'Curated Python repositories - automation, data processing, scientific computing, and CLI tools.' },
-  'systems':       { name: 'Systems Programming',        desc: 'Curated C, C++, and Rust repositories - OS tooling, compilers, and low-level performance projects.' },
-  'mobile':        { name: 'Mobile Repositories',        desc: 'Curated mobile repositories - React Native, Flutter, iOS, Android, and cross-platform tools.' },
-  'database':      { name: 'Database Repositories',      desc: 'Curated database repositories - ORMs, query builders, migrations, and database tooling.' },
-  'learning':      { name: 'Learning Resources',         desc: 'Curated developer learning repositories - roadmaps, cheatsheets, and interview preparation.' },
-  'auth-security': { name: 'Auth & Security',            desc: 'Curated authentication and security repositories - OAuth, JWT, encryption, and pen testing tools.' },
-  'ui-css':        { name: 'UI & CSS Repositories',      desc: 'Curated UI and CSS repositories - component libraries, design systems, and styling frameworks.' },
-  'fullstack':     { name: 'Fullstack Repositories',     desc: 'Curated fullstack repositories - MERN, T3 stack, Next.js, and complete web application boilerplates.' },
-}
+const EXPLORE_SCHEMA_DATA = Object.fromEntries(
+  CATEGORIES.map((cat) => [cat.slug, { name: `${cat.headline} Repositories`, desc: cat.metaDesc }])
+)
 
 function buildJsonLd(url, exploreSlug, blogSlug) {
   if (url === '/') {

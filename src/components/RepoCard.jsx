@@ -9,7 +9,7 @@ const LANG_COLORS = {
 }
 
 const TYPE_COLORS = {
-  Frontend: "#06b6d4", Backend: "#10b981", Fullstack: "#7c6aff",
+  Frontend: "#0ea5e9", Backend: "#10b981", Fullstack: "#3b82f6",
   "AI/ML": "#f59e0b", DevOps: "#ef4444", Database: "#8b5cf6",
   "Auth/Security": "#ec4899", Mobile: "#14b8a6", "CLI/Tools": "#6366f1",
   "Learning/Docs": "#84cc16", "UI/CSS": "#f97316", Boilerplate: "#94a3b8",
@@ -52,16 +52,31 @@ export default function RepoCard({ repo, isPinned, isShelf, togglePin, toggleShe
             className={`action-btn ${isShelf ? "active-yellow" : ""}`}
             onClick={e => { e.stopPropagation(); toggleShelf(repo.full_name) }}
             title="add to shelf"
+            aria-label={isShelf ? `Remove ${repo.full_name} from shelf` : `Add ${repo.full_name} to shelf`}
+            aria-pressed={isShelf}
+            type="button"
           >◈</button>
           <button
             className={`action-btn ${isPinned ? "active-accent" : ""}`}
             onClick={e => { e.stopPropagation(); togglePin(repo.full_name) }}
             title="pin repo"
+            aria-label={isPinned ? `Unpin ${repo.full_name}` : `Pin ${repo.full_name}`}
+            aria-pressed={isPinned}
+            type="button"
           >⊕</button>
         </div>
       </div>
 
-      <div className="card-main" onClick={() => onSelect(repo)}>
+      <div
+        className="card-main"
+        onClick={() => onSelect(repo)}
+        onKeyDown={e => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(repo) }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`View details for ${repo.full_name}`}
+      >
         <div className="card-name mono">{repo.full_name}</div>
         {repo.description && (
           <div className="card-desc card-desc-clamped">{repo.description}</div>
@@ -85,8 +100,8 @@ export default function RepoCard({ repo, isPinned, isShelf, togglePin, toggleShe
           <span className="stat"><ClockIcon /> {timeAgo(repo.last_commit)}</span>
         </div>
         <div className="card-layer-badge" style={{
-          background: repo.layer === 3 ? "#f59e0b22" : repo.layer === 2 ? "#10b98122" : "#7c6aff22",
-          color: repo.layer === 3 ? "#f59e0b" : repo.layer === 2 ? "#10b981" : "#7c6aff",
+          background: repo.layer === 3 ? "#f59e0b22" : repo.layer === 2 ? "#10b98122" : "#d9775722",
+          color: repo.layer === 3 ? "#f59e0b" : repo.layer === 2 ? "#10b981" : "#d97757",
         }}>
           L{repo.layer}
         </div>

@@ -8,13 +8,13 @@ tags: [data, stars, growth, ai-agents]
 
 # The Median GitHub Repo Gains 276 Stars a Year. OpenClaw Is Gaining 578,632.
 
-Star counts alone are misleading - a 10-year-old repo with 5,000 stars and a 6-month-old repo with 5,000 stars are not the same kind of project. To fix that, we computed a **momentum score** across our catalog of 34,787 repos: stars divided by years since creation. It separates repos that are actually accelerating right now from repos that just accumulated stars slowly over a long time.
+Star counts alone are misleading: a 10-year-old repo with 5,000 stars and a 6-month-old repo with 5,000 stars are not the same kind of project. To fix that, we computed a **momentum score** across our catalog of 34,787 repos: stars divided by years since creation. It separates repos that are actually accelerating right now from repos that just accumulated stars slowly over a long time.
 
 ## The direct answer
 
-Across 33,640 repos old enough to measure meaningfully (excluding anything under 6 months old, where the math gets noisy), the **median momentum score is 276 stars per year**. The **mean is 1,067** - pulled up hard by a small number of extreme outliers, which is exactly what you'd expect from a power-law distribution.
+Across 33,640 repos old enough to measure meaningfully (excluding anything under 6 months old, where the math gets noisy), the **median momentum score is 276 stars per year**. The **mean is 1,067**, pulled up hard by a small number of extreme outliers, which is exactly what you'd expect from a power-law distribution.
 
-The single highest-momentum repo in our entire dataset is **openclaw/openclaw**, created November 24, 2025, currently at 356,447 stars - a momentum score of **578,632 stars per year**. That's over 2,000x the median.
+The single highest-momentum repo in our entire dataset is **openclaw/openclaw**, created November 24, 2025, currently at 356,447 stars, a momentum score of **578,632 stars per year**. That's over 2,000x the median.
 
 ## The full distribution
 
@@ -26,7 +26,7 @@ The single highest-momentum repo in our entire dataset is **openclaw/openclaw**,
 | 95th | 3,773.5 |
 | 99th | 13,745.3 |
 
-If your side project is gaining 300 stars a year, you're not underperforming - you're sitting almost exactly at the median of the entire open-source ecosystem. If you're gaining 2,000+ a year, you're already in the top 10%.
+If your side project is gaining 300 stars a year, you're not underperforming. You're sitting almost exactly at the median of the entire open-source ecosystem. If you're gaining 2,000+ a year, you're already in the top 10%.
 
 ## The top 15 by momentum right now
 
@@ -50,10 +50,10 @@ If your side project is gaining 300 stars a year, you're not underperforming - y
 
 ## What the top 15 actually tells you
 
-Every single one of them is AI-agent or AI-coding-tool tooling, created within the last 18 months. This isn't a fluke of our sample - it's the clearest possible signal of where developer attention is concentrated in 2026. Compare this to the top-10-oldest list we published separately (static analyzers, ORMs, real-time editors - all pre-2013): the contrast is the entire story of how open source priorities shift generation to generation.
+Every single one of them is AI-agent or AI-coding-tool tooling, created within the last 18 months. This isn't a fluke of our sample. It's the clearest possible signal of where developer attention is concentrated in 2026. Compare this to the top-10-oldest list we published separately (static analyzers, ORMs, real-time editors, all pre-2013): the contrast is the entire story of how open source priorities shift generation to generation.
 
 ## The honest caveat
 
-This is a snapshot metric, not a growth curve. We have one data point per repo (current stars, current age), not month-by-month history - so "578,632 stars/year" doesn't mean OpenClaw is gaining that many stars *every single year going forward*, it means that's the average rate since creation. Early viral spikes get averaged the same as steady growth. Treat this as a momentum signal, not a forecast.
+This is a snapshot metric, not a growth curve. We have one data point per repo (current stars, current age), not month-by-month history, so "578,632 stars/year" doesn't mean OpenClaw is gaining that many stars *every single year going forward*. It means that's the average rate since creation. Early viral spikes get averaged the same as steady growth. Treat this as a momentum signal, not a forecast.
 
 *Data pulled from our own catalog of 34,787 scored and categorized GitHub repositories.*

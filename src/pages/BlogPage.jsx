@@ -15,7 +15,7 @@ function formatDate(dateStr) {
 export default function BlogPage() {
   usePageMeta(
     "Blog - Repo Zilla",
-    "Data-driven writing on GitHub repos, open source trends, and the dev tools worth paying attention to in 2026 - pulled from our own catalog of 34,787 repositories."
+    "Data-driven writing on GitHub repos, open source trends, and the dev tools worth paying attention to in 2026, pulled straight from our catalog of 34,787 repositories."
   )
 
   const posts = useMemo(() => getAllPosts(), [])
@@ -46,6 +46,8 @@ export default function BlogPage() {
               key={cat}
               className={`blog-filter-chip mono ${activeCategory === cat ? "active" : ""}`}
               onClick={() => setActiveCategory(cat)}
+              aria-pressed={activeCategory === cat}
+              type="button"
             >
               {cat === "all" ? "All" : cat}
             </button>

@@ -7,7 +7,7 @@ const SORT_OPTIONS = [
   { value: "recent", label: "Recent" },
 ]
 
-export default function Sidebar({ stats, filters, setFilters, repos }) {
+export default function Sidebar({ filters, setFilters, repos }) {
   // compute available options from current repos
   const options = useMemo(() => {
     const languages = {}
@@ -55,18 +55,20 @@ export default function Sidebar({ stats, filters, setFilters, repos }) {
       <div className="sidebar-header">
         <span className="sidebar-title mono">FILTERS</span>
         {hasFilters && (
-          <button className="clear-btn" onClick={clearAll}>clear all</button>
+          <button className="clear-btn" onClick={clearAll} type="button">clear all</button>
         )}
       </div>
 
       <div className="sidebar-section">
-        <div className="section-label">SORT BY</div>
-        <div className="sort-options">
+        <div className="section-label" id="sort-by-label">SORT BY</div>
+        <div className="sort-options" role="group" aria-labelledby="sort-by-label">
           {SORT_OPTIONS.map(o => (
             <button
               key={o.value}
               className={`sort-btn ${filters.sortBy === o.value ? "active" : ""}`}
               onClick={() => setFilters(prev => ({ ...prev, sortBy: o.value }))}
+              aria-pressed={filters.sortBy === o.value}
+              type="button"
             >
               {o.label}
             </button>
@@ -75,13 +77,15 @@ export default function Sidebar({ stats, filters, setFilters, repos }) {
       </div>
 
       <div className="sidebar-section">
-        <div className="section-label">PROJECT TYPE</div>
-        <div className="filter-list">
+        <div className="section-label" id="project-type-label">PROJECT TYPE</div>
+        <div className="filter-list" role="group" aria-labelledby="project-type-label">
           {options.projectTypes.map(([type, count]) => (
             <button
               key={type}
               className={`filter-item ${filters.projectTypes.includes(type) ? "active" : ""}`}
               onClick={() => toggleFilter("projectTypes", type)}
+              aria-pressed={filters.projectTypes.includes(type)}
+              type="button"
             >
               <span className="filter-name">{type}</span>
               <span className="filter-count">{count}</span>
@@ -91,13 +95,15 @@ export default function Sidebar({ stats, filters, setFilters, repos }) {
       </div>
 
       <div className="sidebar-section">
-        <div className="section-label">LANGUAGE</div>
-        <div className="filter-list">
+        <div className="section-label" id="language-label">LANGUAGE</div>
+        <div className="filter-list" role="group" aria-labelledby="language-label">
           {options.languages.map(([lang, count]) => (
             <button
               key={lang}
               className={`filter-item ${filters.languages.includes(lang) ? "active" : ""}`}
               onClick={() => toggleFilter("languages", lang)}
+              aria-pressed={filters.languages.includes(lang)}
+              type="button"
             >
               <span className="filter-name">{lang}</span>
               <span className="filter-count">{count}</span>
@@ -107,13 +113,15 @@ export default function Sidebar({ stats, filters, setFilters, repos }) {
       </div>
 
       <div className="sidebar-section">
-        <div className="section-label">CATEGORY</div>
-        <div className="filter-list">
+        <div className="section-label" id="category-label">CATEGORY</div>
+        <div className="filter-list" role="group" aria-labelledby="category-label">
           {options.categories.map(([cat, count]) => (
             <button
               key={cat}
               className={`filter-item ${filters.categories.includes(cat) ? "active" : ""}`}
               onClick={() => toggleFilter("categories", cat)}
+              aria-pressed={filters.categories.includes(cat)}
+              type="button"
             >
               <span className="filter-name">{cat}</span>
               <span className="filter-count">{count}</span>

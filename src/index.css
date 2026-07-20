@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700&display=swap');
 
 :root {
   --bg: #0a0a0f;
@@ -9,9 +9,9 @@
   --text: #e8e8f0;
   --text2: #9090a8;
   --text3: #5a5a72;
-  --accent: #7c6aff;
-  --accent2: #a855f7;
-  --accent3: #06b6d4;
+  --accent: #d97757;
+  --accent2: #b8562e;
+  --accent3: #7a9b76;
   --green: #10b981;
   --yellow: #f59e0b;
   --red: #ef4444;
@@ -22,7 +22,7 @@
   --shadow: 0 4px 24px rgba(0,0,0,0.4);
   --shadow-card: 0 2px 12px rgba(0,0,0,0.3);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.5);
-  --shadow-accent: 0 0 20px rgba(124,106,255,0.12);
+  --shadow-accent: 0 0 20px rgba(217,119,87,0.12);
   --nav-height: 56px;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -50,9 +50,9 @@ html {
   --text: #12121e;
   --text2: #4a4a62;
   --text3: #8a8aa2;
-  --accent: #6c5ce7;
-  --accent2: #9333ea;
-  --accent3: #0891b2;
+  --accent: #c2571f;
+  --accent2: #9c3f14;
+  --accent3: #4f7a5c;
   --green: #059669;
   --yellow: #d97706;
   --red: #dc2626;
@@ -61,7 +61,7 @@ html {
   --shadow: 0 4px 24px rgba(0,0,0,0.08);
   --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
-  --shadow-accent: 0 0 20px rgba(108,92,231,0.08);
+  --shadow-accent: 0 0 20px rgba(194,87,31,0.08);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,7 +73,7 @@ html {
 }
 
 body {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Archivo', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -139,6 +139,25 @@ input:focus, select:focus {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+}
+
+/* /catalogue route: App sits in a flex column with the footer instead of
+   claiming a fixed 100vh on its own - see CataloguePage in AppRouter.jsx.
+   Without this, App's own height:100vh above plus the footer's height
+   pushed the whole page taller than 100vh, so the page itself needed to
+   scroll to reach the footer *and* App's internal grid still scrolled on
+   its own - two scrollbars at once. This makes App flex to fill whatever
+   space is left after the footer, so only App's internal scroll remains. */
+.catalogue-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.catalogue-wrap .app-layout {
+  height: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .main-content {
@@ -213,10 +232,13 @@ input:focus, select:focus {
 }
 
 .loading-bar {
+  width: 100%;
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
   border-radius: 2px;
-  transition: width 0.4s var(--ease);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.4s var(--ease);
   box-shadow: 0 0 10px var(--accent);
 }
 
@@ -470,10 +492,11 @@ input:focus, select:focus {
 }
 
 .section-label {
-  font-size: 0.58rem;
-  letter-spacing: 2px;
+  font-size: 0.6rem;
+  letter-spacing: 1.2px;
   color: var(--text3);
   margin-bottom: 8px;
+  font-weight: 600;
   font-family: 'Space Mono', monospace;
 }
 
@@ -624,7 +647,7 @@ input:focus, select:focus {
 .repo-card:hover {
   background: var(--card-hover);
   border-color: var(--border2);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-hover);
 }
 
@@ -671,11 +694,11 @@ input:focus, select:focus {
 }
 
 .repo-card.is-pinned {
-  border-color: rgba(124,106,255,0.22);
+  border-color: rgba(217,119,87,0.22);
 }
 
 .repo-card.is-pinned:hover {
-  border-color: rgba(124,106,255,0.45);
+  border-color: rgba(217,119,87,0.45);
   box-shadow: var(--shadow-hover), var(--shadow-accent);
 }
 
@@ -1260,14 +1283,6 @@ input:focus, select:focus {
   max-width: 720px;
 }
 
-.hp-eyebrow {
-  font-size: 0.72rem;
-  color: var(--accent);
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-
 .hp-title {
   font-size: clamp(3.2rem, 9vw, 7rem);
   font-weight: 700;
@@ -1321,7 +1336,7 @@ input:focus, select:focus {
 .hp-btn-primary:hover {
   background: color-mix(in srgb, var(--accent) 85%, white);
   box-shadow: 0 4px 20px color-mix(in srgb, var(--accent) 35%, transparent);
-  transform: translateY(-1px);
+  transform: scale(1.02);
 }
 
 .hp-btn-primary:active { transform: scale(0.97); }
@@ -1515,17 +1530,23 @@ input:focus, select:focus {
 .hp-cat-card:hover {
   border-color: var(--accent);
   background: var(--card-hover);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.hp-cat-card:hover .hp-cat-icon {
+  transform: scale(1.12);
 }
 
 .hp-cat-card:active { transform: scale(0.98); }
 
 .hp-cat-icon {
+  display: inline-block;
   font-size: 1.4rem;
   color: var(--accent);
   margin-bottom: 10px;
   line-height: 1;
+  transition: transform 0.18s var(--ease);
 }
 
 .hp-cat-name {
@@ -1573,23 +1594,28 @@ input:focus, select:focus {
 }
 
 .hp-step {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px 24px;
+  padding: 26px 24px 28px;
+  overflow: hidden;
 }
 
-.hp-step-n {
-  font-size: 2rem;
-  font-weight: 700;
-  color: color-mix(in srgb, var(--accent) 40%, transparent);
-  line-height: 1;
-  margin-bottom: 16px;
+.hp-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 2px;
 }
 
 .hp-step-title {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--text);
   margin-bottom: 10px;
 }
@@ -1649,22 +1675,27 @@ input:focus, select:focus {
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
 .footer-brand {
+  justify-self: start;
   font-size: 0.78rem;
   color: var(--accent);
   letter-spacing: 1px;
+  transition: opacity 0.15s var(--ease);
 }
 
+.footer-brand:hover { opacity: 0.8; }
+
 .footer-links {
+  justify-self: center;
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px 20px;
 }
 
 .footer-links a {
@@ -1676,9 +1707,13 @@ input:focus, select:focus {
 .footer-links a:hover { color: var(--accent); }
 
 .footer-copy {
+  justify-self: end;
   font-size: 0.68rem;
   color: var(--text3);
+  transition: color 0.15s var(--ease);
 }
+
+.footer-copy:hover { color: var(--accent); }
 
 /* ---- STATIC PAGES (about / privacy / contact) ---- */
 .static-wrap {
@@ -1798,9 +1833,11 @@ input:focus, select:focus {
 }
 
 .static-content blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 16px;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  padding: 10px 16px;
   margin: 0 0 16px;
+  border-radius: 0 4px 4px 0;
   color: var(--text3);
   font-size: 0.88rem;
 }
@@ -1897,7 +1934,8 @@ ins.adsbygoogle iframe,
 @media (max-width: 640px) {
   .hp-hero { min-height: 80vh; padding: 60px 20px 40px; }
   .hp-cat-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-  .footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .footer-inner { grid-template-columns: 1fr; justify-items: start; gap: 10px; }
+  .footer-brand, .footer-links, .footer-copy { justify-self: start; }
   .hp-stats-section { grid-template-columns: repeat(2, 1fr); }
   .hp-hero-actions { flex-direction: column; align-items: center; }
 }
@@ -1999,15 +2037,22 @@ ins.adsbygoogle iframe,
   color: var(--accent);
 }
 
-/* accordion — max-height animation for smooth open/close */
+/* accordion — max-height reveal for smooth open/close. the max-height itself
+   comes from JS (measured real content height, see ExplorePage.jsx), not a
+   calc()/CSS-var guess, so open AND close are both unambiguous every time. */
 .explore-accordion {
-  max-height: calc(var(--open) * 600px);
   overflow: hidden;
-  transition: max-height 0.3s var(--ease);
-  border-top: calc(var(--open) * 1px) solid var(--border);
+  transition: max-height 0.3s var(--ease), border-top-width 0.3s var(--ease);
+  border-top: 0 solid var(--border);
+  max-height: 0;
+}
+
+.explore-accordion.open {
+  border-top-width: 1px;
 }
 
 .explore-accordion-inner {
+  min-height: 0;
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 24px 28px;
@@ -2139,12 +2184,16 @@ ins.adsbygoogle iframe,
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 20px;
-  transition: border-color 0.15s var(--ease), transform 0.15s var(--ease);
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
 }
 
 .blog-card:hover {
   border-color: var(--accent);
-  transform: translateY(-2px);
+  background: var(--card-hover);
+}
+
+.blog-card:hover .blog-card-title {
+  color: var(--accent);
 }
 
 .blog-card-cat {
@@ -2161,6 +2210,7 @@ ins.adsbygoogle iframe,
   color: var(--text);
   line-height: 1.4;
   margin: 0 0 10px;
+  transition: color 0.15s var(--ease);
 }
 
 .blog-card-excerpt {
@@ -2190,6 +2240,12 @@ ins.adsbygoogle iframe,
 
 /* ---- BLOG POST ---- */
 .blog-post-inner { max-width: 760px; }
+
+/* the back link and category label sit on the same inline row - give them
+   breathing room instead of touching (was rendering with zero gap between). */
+.blog-post-inner .static-back {
+  margin-right: 14px;
+}
 
 .blog-post-cat {
   display: inline-block;

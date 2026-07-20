@@ -12,8 +12,8 @@ export default function AdUnit({ slot, format = "auto", style = {} }) {
       // window.adsbygoogle is injected by the script in index.html
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       pushed.current = true
-    } catch (e) {
-      // script not loaded yet or blocked by an adblocker — silently skip
+    } catch {
+      // script not loaded yet or blocked by an adblocker - silently skip
     }
   }, [slot])
 

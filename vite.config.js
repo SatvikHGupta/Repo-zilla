@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import { vitePrerenderPlugin } from 'vite-prerender-plugin'
 import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { parseFrontmatter, makeExcerpt, estimateReadingTime, isPublished } from './src/lib/blogParse.js'
+import { CATEGORIES } from './src/data/categories.js'
 
 // Vercel (and most static hosts) auto-serve a root-level 404.html with a
 // real HTTP 404 status for any unmatched path. The prerender plugin only
@@ -37,22 +39,76 @@ function getBlogSlugs() {
 
 const blogRoutes = getBlogSlugs().map((slug) => `/blog/${slug}`)
 
+// Generates src/lib/blog-meta.generated.json - title/date/category/tags/
+// excerpt/readingTime for every post, and NOTHING else. Deliberately never
+// touches the full markdown body: the body stays out of this file so it can
+// stay out of the eagerly-loaded browser bundle too (see blog.js, which
+// loads bodies lazily/code-split instead of eagerly). Runs on buildStart so
+// it's always fresh for both `vite dev` and `vite build`. The generated
+// file is committed so a fresh checkout always has a valid one to import
+// even before the first build runs.
+function generateBlogMetaPlugin() {
+  return {
+    name: 'generate-blog-meta',
+    buildStart() {
+      const dir = resolve(__dirname, 'src/content/blog')
+      const entries = existsSync(dir)
+        ? readdirSync(dir)
+            .filter((f) => f.endsWith('.md'))
+            .map((f) => {
+              const raw = readFileSync(resolve(dir, f), 'utf-8')
+              const { meta, body } = parseFrontmatter(raw)
+              if (!meta.slug) return null
+              return {
+                slug: meta.slug,
+                title: meta.title || meta.slug,
+                date: meta.date || '2026-07-08',
+                category: meta.category || 'general',
+                tags: Array.isArray(meta.tags) ? meta.tags : [],
+                excerpt: makeExcerpt(body),
+                readingTime: estimateReadingTime(body),
+                // exact key import.meta.glob() uses in blog.js, so a slug
+                // can be mapped back to its lazy body loader
+                file: `/src/content/blog/${f}`,
+              }
+            })
+            .filter(Boolean)
+            // Filter HERE, at generation time - not just when blog.js reads
+            // this file back. This file is what src/lib/blog.js imports
+            // (and, transitively, whatever bundle ends up importing THAT),
+            // so any post that shouldn't be public yet must never be
+            // written into it in the first place. See the long comment in
+            // src/prerender.jsx for the full story of why "filter on read"
+            // isn't good enough here.
+            //
+            // Real consequence of this: a post becomes visible starting
+            // from the first BUILD that runs on or after its publish date,
+            // not the instant a visitor's clock crosses that date within an
+            // already-deployed session. If you want same-day publishing
+            // without remembering to redeploy, wire a scheduled rebuild
+            // (Vercel Cron Job -> Deploy Hook) to run daily; without one,
+            // "live" means "live as of your next deploy on/after the date."
+            .filter((e) => isPublished(e.date))
+        : []
+
+      entries.sort((a, b) => (a.date < b.date ? 1 : -1))
+
+      const dest = resolve(__dirname, 'src/lib/blog-meta.generated.json')
+      writeFileSync(dest, JSON.stringify(entries, null, 2) + '\n')
+    },
+  }
+}
+
 const STATIC_ROUTES = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },
   { loc: '/catalogue', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/backend', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/ai-ml', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/frontend', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/devops', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/js-general', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/python', changefreq: 'weekly', priority: '0.9' },
-  { loc: '/explore/systems', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/mobile', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/database', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/learning', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/auth-security', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/ui-css', changefreq: 'weekly', priority: '0.8' },
-  { loc: '/explore/fullstack', changefreq: 'weekly', priority: '0.8' },
+  ...CATEGORIES.map((cat) => ({
+    loc: `/explore/${cat.slug}`,
+    changefreq: 'weekly',
+    // larger categories get a slightly higher priority, same tiering the
+    // old hand-written list used (backend..python at 0.9, the rest at 0.8)
+    priority: cat.count >= 1800 ? '0.9' : '0.8',
+  })),
   { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
   { loc: '/about', changefreq: 'monthly', priority: '0.7' },
   { loc: '/privacy', changefreq: 'monthly', priority: '0.5' },
@@ -75,7 +131,8 @@ function generateSitemapPlugin() {
               const dateMatch = content.match(/^date:\s*(.+)$/m)
               const slug = slugMatch ? slugMatch[1].trim().replace(/^"(.*)"$/, '$1') : null
               const date = dateMatch ? dateMatch[1].trim().replace(/^"(.*)"$/, '$1') : null
-              return slug ? { loc: `/blog/${slug}`, changefreq: 'monthly', priority: '0.7', lastmod: date } : null
+              if (!slug || !isPublished(date)) return null
+              return { loc: `/blog/${slug}`, changefreq: 'monthly', priority: '0.7', lastmod: date }
             })
             .filter(Boolean)
         : []
@@ -101,6 +158,7 @@ function generateSitemapPlugin() {
 
 export default defineConfig({
   plugins: [
+    generateBlogMetaPlugin(),
     react(),
     vitePrerenderPlugin({
       renderTarget: '#root',
@@ -109,19 +167,7 @@ export default defineConfig({
         '/about',
         '/privacy',
         '/contact',
-        '/explore/backend',
-        '/explore/ai-ml',
-        '/explore/frontend',
-        '/explore/devops',
-        '/explore/js-general',
-        '/explore/python',
-        '/explore/systems',
-        '/explore/mobile',
-        '/explore/database',
-        '/explore/learning',
-        '/explore/auth-security',
-        '/explore/ui-css',
-        '/explore/fullstack',
+        ...CATEGORIES.map((cat) => `/explore/${cat.slug}`),
         '/blog',
         ...blogRoutes,
       ],

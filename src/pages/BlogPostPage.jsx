@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Footer from "../components/Footer.jsx"
 import AdUnit from "../components/AdUnit.jsx"
 import { usePageMeta } from "../hooks/usePageMeta.js"
-import { getPostBySlug, getAllPosts, renderMarkdown } from "../lib/blog.js"
+import { getPostMeta, getPostBody, getPrefetchedBody, getAllPosts, renderMarkdown } from "../lib/blog.js"
 import NotFoundPage from "./NotFoundPage.jsx"
 
 function formatDate(dateStr) {
@@ -19,7 +20,29 @@ function stripLeadingH1(body) {
 }
 
 export default function BlogPostPage({ slug }) {
-  const post = getPostBySlug(slug)
+  const post = getPostMeta(slug)
+
+  // Body loads lazily/code-split (see src/lib/blog.js) - not bundled
+  // eagerly, so it's not sitting in plain JS for every visitor on every
+  // page load. During prerendering, src/prerender.jsx pre-fetches this
+  // into the cache before render, so already-published posts still get
+  // full real content baked into the static HTML for SEO. In a normal
+  // browser load the cache starts empty, so this fetches on mount - a
+  // brief "loading" state is expected here, that's the actual tradeoff of
+  // going lazy instead of eager.
+  const [body, setBody] = useState(() => (post ? getPrefetchedBody(slug) : null))
+
+  useEffect(() => {
+    if (!post) return
+    if (getPrefetchedBody(slug) != null) return
+    let cancelled = false
+    getPostBody(slug).then((b) => {
+      if (!cancelled) setBody(b)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [slug, post])
 
   usePageMeta(
     post ? `${post.title} - Repo Zilla Blog` : "Post not found - Repo Zilla",
@@ -30,7 +53,26 @@ export default function BlogPostPage({ slug }) {
     return <NotFoundPage />
   }
 
-  const html = renderMarkdown(stripLeadingH1(post.body))
+  if (body == null) {
+    return (
+      <div className="static-wrap">
+        <div className="static-inner blog-post-inner">
+          <Link to="/blog" className="static-back">← all posts</Link>
+          <span className="blog-post-cat mono">{post.category}</span>
+          <h1 className="static-title blog-post-title">{post.title}</h1>
+          <div className="static-meta blog-post-meta mono">
+            <span>{formatDate(post.date)}</span>
+            <span className="blog-card-dot">·</span>
+            <span>{post.readingTime} min read</span>
+          </div>
+          <p className="static-content">Loading…</p>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  const html = renderMarkdown(stripLeadingH1(body))
 
   // split the rendered HTML roughly in half (by top-level <h2> boundary) to
   // slot an ad unit mid-article once real ad slots exist

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { cacheLayer, getCachedLayer, getUserData, setUserData } from "./db.js"
 import LoadingScreen from "./components/LoadingScreen.jsx"
 import Navbar from "./components/Navbar.jsx"
@@ -89,13 +89,12 @@ export default function App({ initialType }) {
         setLoadingPct(90)
         setLoadingMsg("almost there...")
 
-        // load layer 0 in background after UI shows
+        // main UI is ready - layer 0 (the full ~26k-repo "ALL" catalogue,
+        // an 18MB file) is loaded on demand the first time someone actually
+        // switches to that tab, not blindly for every visitor.
         setLoadingPct(100)
         setLoadingMsg("ready.")
         setTimeout(() => setLoading(false), 400)
-
-        // background load layer 0
-        setTimeout(() => loadLayer(0, setLayerData), 1000)
 
       } catch (err) {
         console.error("init error:", err)
@@ -119,6 +118,19 @@ export default function App({ initialType }) {
     setLayerData(prev => ({ ...prev, [layer]: data }))
     return data
   }
+
+  // layer 0 ("ALL", ~18MB) is deliberately not loaded on app init - only
+  // fetch it the first time the user actually switches to that tab. The
+  // "is it loading" flag is derived from layerData itself (not a separate
+  // setState in the effect) so we don't trip react-hooks/set-state-in-effect;
+  // the ref just prevents firing the fetch twice.
+  const layer0RequestedRef = useRef(false)
+  useEffect(() => {
+    if (activeLayer !== 0 || layerData[0].length > 0 || layer0RequestedRef.current) return
+    layer0RequestedRef.current = true
+    loadLayer(0, setLayerData)
+  }, [activeLayer, layerData])
+  const layer0Loading = activeLayer === 0 && layerData[0].length === 0
 
   // pin toggle
   const togglePin = useCallback(async (fullName) => {
@@ -176,6 +188,7 @@ export default function App({ initialType }) {
           toggleShelf={toggleShelf}
           onSelect={setSelectedRepo}
           activeLayer={activeLayer}
+          layerLoading={layer0Loading}
         />
       </div>
       {selectedRepo && (

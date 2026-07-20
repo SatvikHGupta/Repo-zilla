@@ -27,8 +27,8 @@ export default function NotFoundPage() {
         </h1>
 
         <p className="nf-text">
-          Checked all 34,787 repos. This URL isn't one of them - not a page, not a repo, not
-          anything I've built. Probably a typo, or a link to something that's since moved.
+          Checked all 34,787 repos in the catalogue. This URL doesn't match any of them.
+          Most likely a typo, or a link pointing at something that's since moved.
         </p>
 
         <div className="nf-actions">

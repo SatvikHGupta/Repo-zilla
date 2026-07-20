@@ -8,11 +8,11 @@ tags: [data, open-source, longevity, c++]
 
 # We Checked 34,787 Repos. The Oldest One Still Getting Commits Is From 2009.
 
-The oldest actively maintained repository in our catalog of 34,787 GitHub projects is **cppcheck-opensource/cppcheck**, created on March 4, 2009 - and it received a commit as recently as June 26, 2026. That's over 17 years of continuous maintenance on the same static analysis tool for C and C++ code, currently sitting at 6,660 stars.
+The oldest actively maintained repository in our catalog of 34,787 GitHub projects is **cppcheck-opensource/cppcheck**, created on March 4, 2009, and it received a commit as recently as June 26, 2026. That's over 17 years of continuous maintenance on the same static analysis tool for C and C++ code, currently sitting at 6,660 stars.
 
 ## The methodology
 
-We filtered our full dataset down to repos with a commit in the last 30 days, then sorted by creation date, oldest first. No survivorship bias trick here - we didn't cherry-pick "famous old projects," we asked the data directly: of everything still receiving code today, what's the oldest?
+We filtered our full dataset down to repos with a commit in the last 30 days, then sorted by creation date, oldest first. No survivorship bias trick here; we didn't cherry-pick "famous old projects," we asked the data directly: of everything still receiving code today, what's the oldest?
 
 ## The top 10, oldest to "recent"
 
@@ -31,11 +31,11 @@ We filtered our full dataset down to repos with a commit in the last 30 days, th
 
 ## What's actually interesting here
 
-None of these are the repos you'd guess from memory. This isn't Linux, isn't jQuery, isn't Rails. It's a static analysis tool, a JIT assembler library, an ORM extension, a real-time collaborative editor, and a Java event-sourcing framework - the unglamorous infrastructure layer that quietly outlives every framework hype cycle built on top of it.
+None of these are the repos you'd guess from memory. The famous names, Linux, jQuery, Rails, aren't on it. What's actually here is a static analysis tool, a JIT assembler library, an ORM extension, a real-time collaborative editor, and a Java event-sourcing framework: the unglamorous infrastructure layer that quietly outlives every framework hype cycle built on top of it.
 
-**Etherpad** is the standout for relevance: an open-source real-time collaborative text editor from 2011, still shipping commits in 2026, with 18,414 stars - proof that "old" and "niche" aren't the same thing.
+**Etherpad** is the standout for relevance: an open-source real-time collaborative text editor from 2011, still shipping commits in 2026, with 18,414 stars, proof that "old" and "niche" aren't the same thing.
 
-**cppcheck** is the standout for pure longevity: a single-purpose C/C++ linter that's been maintained through 17 years of language spec changes, compiler updates, and at least three separate hype waves of "AI will replace static analysis" - and it's still here, still getting real commits.
+**cppcheck** is the standout for pure longevity: a single-purpose C/C++ linter that's been maintained through 17 years of language spec changes, compiler updates, and at least three separate hype waves of "AI will replace static analysis," and it's still here, still getting real commits.
 
 ## The pattern across the top 10
 
@@ -43,6 +43,6 @@ Every single one of these predates the framework it's most often compared agains
 
 ## Why this matters if you're picking a dependency today
 
-Age alone isn't a quality signal - plenty of old repos are abandoned husks. But age *combined with* an active commit in the last 30 days is a much stronger signal than stars alone. A repo that's survived 15+ years of maintainer turnover, ecosystem shifts, and changing best practices has already been stress-tested in a way a trendy six-month-old project simply hasn't.
+Age alone isn't a quality signal; plenty of old repos are abandoned husks. But age *combined with* an active commit in the last 30 days is a much stronger signal than stars alone. A repo that's survived 15+ years of maintainer turnover, ecosystem shifts, and changing best practices has already been stress-tested in a way a trendy six-month-old project simply hasn't.
 
 *Data pulled from our own catalog of 34,787 scored and categorized GitHub repositories, refreshed as part of our ongoing curation pipeline.*

@@ -1,13 +1,23 @@
-import { useMemo, useState, useRef } from "react"
+import { useMemo, useState, useRef, useEffect } from "react"
 import Fuse from "fuse.js"
 import RepoCard from "./RepoCard.jsx"
 import Pagination from "./Pagination.jsx"
 
 const PAGE_SIZE = 50
+const SEARCH_DEBOUNCE_MS = 200
 
-export default function RepoGrid({ repos, filters, search, userPins, userShelf, togglePin, toggleShelf, onSelect }) {
+export default function RepoGrid({ repos, filters, search, userPins, userShelf, togglePin, toggleShelf, onSelect, layerLoading }) {
   const [page, setPage] = useState(1)
   const gridTopRef = useRef(null)
+
+  // debounce the search term before it drives the (potentially expensive,
+  // up to ~25k-row) Fuse.js query - the input itself stays instant, only
+  // the actual filtering waits a beat for typing to pause.
+  const [debouncedSearch, setDebouncedSearch] = useState(search)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS)
+    return () => clearTimeout(timer)
+  }, [search])
 
   // fuse search instance
   const fuse = useMemo(() => new Fuse(repos, {
@@ -21,8 +31,8 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
     let result = repos
 
     // search
-    if (search.trim()) {
-      result = fuse.search(search).map(r => r.item)
+    if (debouncedSearch.trim()) {
+      result = fuse.search(debouncedSearch).map(r => r.item)
     }
 
     // filters
@@ -38,7 +48,7 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
       result = result.filter(r => r.stars <= filters.starsMax)
 
     // sort
-    if (!search.trim()) {
+    if (!debouncedSearch.trim()) {
       result = [...result].sort((a, b) => {
         if (filters.sortBy === "stars") return b.stars - a.stars
         if (filters.sortBy === "forks") return b.forks - a.forks
@@ -48,7 +58,7 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
     }
 
     return result
-  }, [repos, search, filters, fuse])
+  }, [repos, debouncedSearch, filters, fuse])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
 
@@ -95,7 +105,13 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
         ))}
       </div>
       <Pagination page={safePage} totalPages={totalPages} onPageChange={handlePageChange} />
-      {filtered.length === 0 && (
+      {filtered.length === 0 && layerLoading && (
+        <div className="empty-state">
+          <div className="empty-icon mono">…</div>
+          <div className="empty-text">loading the full catalogue (only happens once)</div>
+        </div>
+      )}
+      {filtered.length === 0 && !layerLoading && (
         <div className="empty-state">
           <div className="empty-icon">∅</div>
           <div className="empty-text">no repos match your filters</div>

@@ -17,7 +17,7 @@ export default function LoadingScreen({ message, percent, stats }) {
           </div>
         )}
         <div className="loading-bar-wrap">
-          <div className="loading-bar" style={{ width: `${percent}%` }} />
+          <div className="loading-bar" style={{ transform: `scaleX(${percent / 100})` }} />
         </div>
         <div className="loading-msg mono">{message}</div>
       </div>

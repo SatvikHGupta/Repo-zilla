@@ -1,15 +1,14 @@
-import { useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import Footer from "../components/Footer.jsx"
 import { usePageMeta } from "../hooks/usePageMeta.js"
 
 export default function ContactPage() {
-  const navigate = useNavigate()
   usePageMeta("Contact - Repo Zilla", "Contact Repo Zilla developer Satvik Hemant Gupta on GitHub.")
 
   return (
     <div className="static-wrap">
       <div className="static-inner">
-        <button className="static-back mono" onClick={() => navigate("/")}>← back</button>
+        <Link to="/" className="static-back mono">← back</Link>
 
         <h1 className="static-title">Contact</h1>
 

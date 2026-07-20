@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Footer from "../components/Footer.jsx"
 import { usePageMeta } from "../hooks/usePageMeta.js"
+import { CATEGORIES } from "../data/categories.js"
 
 // --- data ---
 const STATS = [
@@ -11,36 +12,18 @@ const STATS = [
   { label: "Top Shelf", value: 250, suffix: "" },
 ]
 
-const CATEGORIES = [
-  { slug: "backend",       type: "Backend",        icon: "⬡", count: 10035, desc: "APIs, servers, frameworks, microservices" },
-  { slug: "ai-ml",         type: "AI/ML",          icon: "◈", count: 4570,  desc: "LLMs, deep learning, computer vision, NLP" },
-  { slug: "frontend",      type: "Frontend",       icon: "▣", count: 4178,  desc: "React, Vue, Angular, Svelte, UI frameworks" },
-  { slug: "js-general",    type: "JS/General",     icon: "◎", count: 3435,  desc: "JavaScript utilities, tooling, runtimes" },
-  { slug: "devops",        type: "DevOps",         icon: "⬢", count: 2552,  desc: "Docker, Kubernetes, CI/CD, Infrastructure" },
-  { slug: "systems",       type: "Systems",        icon: "⊞", count: 1611,  desc: "C/C++/Rust low-level and OS tooling" },
-  { slug: "python",        type: "Python/General", icon: "◉", count: 1808,  desc: "Python scripts, libraries, automation" },
-  { slug: "mobile",        type: "Mobile",         icon: "▤", count: 1571,  desc: "React Native, Flutter, iOS, Android" },
-  { slug: "database",      type: "Database",       icon: "⊟", count: 1325,  desc: "ORMs, migrations, query builders, caches" },
-  { slug: "learning",      type: "Learning/Docs",  icon: "▦", count: 1216,  desc: "Roadmaps, cheatsheets, interview prep" },
-  { slug: "auth-security", type: "Auth/Security",  icon: "◈", count: 654,   desc: "OAuth, JWT, encryption, pen testing" },
-  { slug: "ui-css",        type: "UI/CSS",         icon: "▩", count: 802,   desc: "Component libs, design systems, icons" },
-]
-
 const STEPS = [
   {
-    n: "01",
     title: "Fetched from GitHub",
-    body: "57 targeted search queries across languages, frameworks, and topics pull repos matching quality thresholds - stars, activity, and topic coverage.",
+    body: "57 targeted search queries sweep across languages, frameworks, and topics, pulling in repos that clear real quality thresholds: stars, activity, and topic coverage.",
   },
   {
-    n: "02",
     title: "Scored and Classified",
-    body: "Each repo is assigned a composite score from stars, forks, recency, topic depth, and description quality, then classified into project types and categories.",
+    body: "Each repo gets a composite score built from stars, forks, recency, topic depth, and description quality. That score decides which project type and category it lands in.",
   },
   {
-    n: "03",
     title: "Tiered into Layers",
-    body: "Repos are stratified into four layers - from 25k general repos up to a 250-repo curated shelf of the highest-signal projects across every category.",
+    body: "Repos settle into one of four layers, ranging from a 25k-repo general pool up to a 250-repo curated shelf holding the highest-signal projects in every category.",
   },
 ]
 
@@ -103,7 +86,9 @@ function CategoryCard({ slug, type, icon, count, desc, delay }) {
       onClick={() => navigate(`/explore/${slug}`)}
       role="button"
       tabIndex={0}
-      onKeyDown={e => e.key === "Enter" && navigate(`/explore/${slug}`)}
+      onKeyDown={e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate(`/explore/${slug}`) }
+      }}
     >
       <div className="hp-cat-icon">{icon}</div>
       <div className="hp-cat-name">{type}</div>
@@ -127,24 +112,21 @@ export default function HomePage() {
       <section className="hp-hero">
         <div className="hp-hero-bg" aria-hidden="true" />
         <div className="hp-hero-inner">
-          <div className="hp-eyebrow mono hp-fade-in" style={{ animationDelay: "0ms" }}>
-            open source · curated · ranked
-          </div>
-          <h1 className="hp-title hp-fade-in" style={{ animationDelay: "80ms" }}>
+          <h1 className="hp-title hp-fade-in" style={{ animationDelay: "0ms" }}>
             <span className="hp-title-bracket">[</span>
             REPO
             <span className="hp-title-accent">ZILLA</span>
             <span className="hp-title-bracket">]</span>
           </h1>
           <p className="hp-subtitle hp-fade-in" style={{ animationDelay: "160ms" }}>
-            34,787 GitHub repositories. Scored. Classified. Layered.<br />
-            Find exactly what you're looking for - instantly.
+            An open source, independently curated and ranked catalogue of 34,787 GitHub repositories.<br />
+            Scored, classified, layered, so you can find what you need without wading through noise.
           </p>
           <div className="hp-hero-actions hp-fade-in" style={{ animationDelay: "240ms" }}>
-            <button className="hp-btn-primary" onClick={() => navigate("/catalogue")}>
+            <button className="hp-btn-primary" onClick={() => navigate("/catalogue")} type="button">
               Browse Catalogue →
             </button>
-            <button className="hp-btn-ghost" onClick={() => navigate("/about")}>
+            <button className="hp-btn-ghost" onClick={() => navigate("/about")} type="button">
               How it works
             </button>
           </div>
@@ -168,7 +150,7 @@ export default function HomePage() {
         </div>
         <div className="hp-cat-grid">
           {CATEGORIES.map((cat, i) => (
-            <CategoryCard key={cat.type} {...cat} delay={i * 40} />
+            <CategoryCard key={cat.slug} {...cat} desc={cat.shortDesc} delay={i * 40} />
           ))}
         </div>
       </section>
@@ -184,11 +166,10 @@ export default function HomePage() {
         <div className="hp-steps">
           {STEPS.map((step, i) => (
             <div
-              key={step.n}
+              key={step.title}
               className={`hp-step ${stepsInView ? "hp-in" : ""}`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
-              <div className="hp-step-n mono">{step.n}</div>
               <div className="hp-step-body">
                 <div className="hp-step-title">{step.title}</div>
                 <div className="hp-step-desc">{step.body}</div>
@@ -204,7 +185,7 @@ export default function HomePage() {
           <h2 className="hp-cta-title">Start Exploring</h2>
           <p className="hp-cta-sub">
             Search across names, descriptions, and topics. Filter by language, type, or category.
-            Pin the repos you care about - they're saved locally, no account needed.
+            Pin the repos you care about. They're saved locally, no account needed.
           </p>
           <button className="hp-btn-primary hp-btn-lg" onClick={() => navigate("/catalogue")}>
             Open the Catalogue →

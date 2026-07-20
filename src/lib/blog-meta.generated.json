@@ -1,0 +1,141 @@
+[
+  {
+    "slug": "median-github-repo-stats-2026",
+    "title": "The Median Repo in Our Catalog Has 1,674 Stars. Most 'Top Repo' Lists Never Show You This Number.",
+    "date": "2026-07-19",
+    "category": "learning",
+    "tags": [
+      "data",
+      "benchmarks",
+      "stars",
+      "methodology"
+    ],
+    "excerpt": "Every \"best GitHub repos\" listicle shows you outliers: React, TensorFlow, freeCodeCamp, things with six-figure star counts. Nobody publishes the boring middle of the distribution. So here it is: acros…",
+    "readingTime": 3,
+    "file": "/src/content/blog/median-repo-stats.md"
+  },
+  {
+    "slug": "geo-eating-seo-2026",
+    "title": "Adobe Just Paid $1.9B to Admit SEO Is Dying. Here's What Replaces It.",
+    "date": "2026-07-12",
+    "category": "industry",
+    "tags": [
+      "geo",
+      "seo",
+      "ai-search",
+      "marketing",
+      "adobe"
+    ],
+    "excerpt": "In November 2025, Adobe agreed to buy Semrush, a company best known for keyword research and SEO tooling, for roughly $1.9 billion in an all-cash deal. Adobe's own announcement frames Semrush as a bra…",
+    "readingTime": 3,
+    "file": "/src/content/blog/geo-eating-seo.md"
+  },
+  {
+    "slug": "booklore-single-maintainer-burnout-2026",
+    "title": "Booklore Had 10,000 Stars and a Thousand Daily Users. Then One Person Deleted It Overnight.",
+    "date": "2026-07-05",
+    "category": "culture",
+    "tags": [
+      "open-source",
+      "maintainer-burnout",
+      "self-hosted",
+      "github"
+    ],
+    "excerpt": "Booklore was a self-hosted digital library platform (think Plex, but for your ebook and comic collection) with over 10,000 GitHub stars and thousands of daily users. In March 2026, it went from active…",
+    "readingTime": 4,
+    "file": "/src/content/blog/booklore-maintainer-burnout.md"
+  },
+  {
+    "slug": "mern-stack-cargo-cult-2026",
+    "title": "5 Things the MERN Stack Still Tells You to Do That You Should Probably Stop Doing",
+    "date": "2026-06-28",
+    "category": "opinion",
+    "tags": [
+      "mern",
+      "react",
+      "state-management",
+      "best-practices",
+      "opinion"
+    ],
+    "excerpt": "Every stack accumulates folklore: practices that made sense when they were adopted and kept getting repeated long after the reason stopped applying. MERN has had over a decade to build up its own pile…",
+    "readingTime": 4,
+    "file": "/src/content/blog/mern-cargo-cult.md"
+  },
+  {
+    "slug": "npm-install-checklist-real-examples-2026",
+    "title": "7 Things to Check Before You Run npm install, With Real Examples of Each Failure",
+    "date": "2026-06-21",
+    "category": "practical",
+    "tags": [
+      "npm",
+      "dependencies",
+      "github",
+      "checklist",
+      "security"
+    ],
+    "excerpt": "Running a scoring pipeline across 34,787 repositories surfaces the same handful of red flags over and over. Here's a practical checklist, with real, named repos from our catalog that illustrate each s…",
+    "readingTime": 3,
+    "file": "/src/content/blog/npm-install-checklist.md"
+  },
+  {
+    "slug": "reverse-engineered-repo-scoring-formula-2026",
+    "title": "I Reverse-Engineered My Own Scoring Formula Because I'd Lost the Source",
+    "date": "2026-06-14",
+    "category": "data",
+    "tags": [
+      "github",
+      "scoring",
+      "regression",
+      "methodology",
+      "data"
+    ],
+    "excerpt": "Every repo in our 34,787-repository catalog carries a computed quality score, but the frontend package I had on hand only shipped the pre-computed scores, not the actual scoring logic that produced th…",
+    "readingTime": 3,
+    "file": "/src/content/blog/reverse-engineered-scoring-formula.md"
+  },
+  {
+    "slug": "zombie-github-repos-high-stars-stale-2026",
+    "title": "3,795 Repos in Our Catalog Have 1,000+ Stars and Haven't Been Touched in 2+ Years. Atom Is One of Them.",
+    "date": "2026-06-07",
+    "category": "devops",
+    "tags": [
+      "data",
+      "dependencies",
+      "maintenance",
+      "risk"
+    ],
+    "excerpt": "Of the 23,243 repos in our catalog with 1,000 or more stars, 3,795 of them (16.3%) haven't had a commit in over two years. That's not a rounding error. That's roughly 1 in 6 popular, trusted-looking r…",
+    "readingTime": 3,
+    "file": "/src/content/blog/zombie-repos-high-stars-stale.md"
+  },
+  {
+    "slug": "github-repo-momentum-score-2026",
+    "title": "The Median GitHub Repo Gains 276 Stars a Year. OpenClaw Is Gaining 578,632.",
+    "date": "2026-05-31",
+    "category": "ai-ml",
+    "tags": [
+      "data",
+      "stars",
+      "growth",
+      "ai-agents"
+    ],
+    "excerpt": "Star counts alone are misleading: a 10-year-old repo with 5,000 stars and a 6-month-old repo with 5,000 stars are not the same kind of project. To fix that, we computed a momentum score across our cat…",
+    "readingTime": 3,
+    "file": "/src/content/blog/repo-momentum-score.md"
+  },
+  {
+    "slug": "oldest-github-repo-still-active-2026",
+    "title": "We Checked 34,787 Repos. The Oldest One Still Getting Commits Is From 2009.",
+    "date": "2026-05-24",
+    "category": "backend",
+    "tags": [
+      "data",
+      "open-source",
+      "longevity",
+      "c++"
+    ],
+    "excerpt": "The oldest actively maintained repository in our catalog of 34,787 GitHub projects is cppcheck-opensource/cppcheck, created on March 4, 2009, and it received a commit as recently as June 26, 2026. Tha…",
+    "readingTime": 2,
+    "file": "/src/content/blog/oldest-repo-still-active.md"
+  }
+]

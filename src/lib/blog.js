@@ -1,95 +1,85 @@
 import { marked } from "marked"
+import sanitizeHtml from "sanitize-html"
+import { parseFrontmatter, isPublished } from "./blogParse.js"
+import { getPrefetchedBody, setPrefetchedBody } from "./blogPrefetchCache.js"
+import blogMeta from "./blog-meta.generated.json"
 
-// Loads every .md file in src/content/blog/ at build time (Vite glob import).
-// Works identically in the browser and in Node during prerendering, since
-// it's plain string parsing with no DOM/browser-only APIs.
-const rawPosts = import.meta.glob("/src/content/blog/*.md", {
-  eager: true,
+// Lazy, code-split - deliberately NOT { eager: true }. Vite emits each
+// post's raw markdown as its own separate chunk file, only fetched over
+// the network when getPostBody() below is actually called and awaited.
+// This is what keeps unpublished (and, really, all) post bodies out of the
+// main JS bundle that ships to every visitor on every page load.
+const lazyBodyLoaders = import.meta.glob("/src/content/blog/*.md", {
   query: "?raw",
   import: "default",
 })
 
-function parseFrontmatter(raw) {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
-  if (!match) return { meta: {}, body: raw }
-
-  const [, frontmatterBlock, body] = match
-  const meta = {}
-
-  for (const line of frontmatterBlock.split("\n")) {
-    const lineMatch = line.match(/^([a-zA-Z0-9_]+):\s*(.*)$/)
-    if (!lineMatch) continue
-    const [, key, rawValue] = lineMatch
-    let value = rawValue.trim()
-
-    if (value.startsWith("[") && value.endsWith("]")) {
-      value = value
-        .slice(1, -1)
-        .split(",")
-        .map((v) => v.trim())
-        .filter(Boolean)
-    } else if (key === "tags") {
-      value = value.split(",").map((v) => v.trim()).filter(Boolean)
-    } else {
-      value = value.replace(/^"(.*)"$/, "$1")
-    }
-
-    meta[key] = value
-  }
-
-  return { meta, body: body.trim() }
-}
-
-function makeExcerpt(body, length = 200) {
-  // strip the leading H1 (title is shown separately) and markdown syntax,
-  // then take the first real paragraph as a plain-text excerpt
-  const withoutH1 = body.replace(/^#\s+.+\n+/, "")
-  const firstParagraph = withoutH1.split(/\n{2,}/).find((block) => block.trim() && !block.startsWith("#")) || ""
-  const plain = firstParagraph
-    .replace(/\*\*(.+?)\*\*/g, "$1")
-    .replace(/\*(.+?)\*/g, "$1")
-    .replace(/`(.+?)`/g, "$1")
-    .replace(/\[(.+?)\]\(.+?\)/g, "$1")
-    .replace(/\s+/g, " ")
-    .trim()
-  return plain.length > length ? plain.slice(0, length).trim() + "…" : plain
-}
-
-function estimateReadingTime(body) {
-  const words = body.split(/\s+/).filter(Boolean).length
-  return Math.max(1, Math.round(words / 220))
-}
-
-const allPosts = Object.values(rawPosts)
-  .map((raw) => {
-    const { meta, body } = parseFrontmatter(raw)
-    if (!meta.slug) return null
-    return {
-      slug: meta.slug,
-      title: meta.title || meta.slug,
-      date: meta.date || "2026-07-08",
-      category: meta.category || "general",
-      tags: Array.isArray(meta.tags) ? meta.tags : [],
-      excerpt: makeExcerpt(body),
-      readingTime: estimateReadingTime(body),
-      body,
-    }
-  })
-  .filter(Boolean)
-  .sort((a, b) => (a.date < b.date ? 1 : -1))
+export { getPrefetchedBody }
 
 export function getAllPosts() {
-  return allPosts
+  return blogMeta.filter((p) => isPublished(p.date))
 }
 
-export function getPostBySlug(slug) {
-  return allPosts.find((p) => p.slug === slug) || null
+export function getPostMeta(slug) {
+  const post = blogMeta.find((p) => p.slug === slug)
+  if (!post || !isPublished(post.date)) return null
+  return post
 }
+
+// Async on purpose - see lazyBodyLoaders above. Returns null if the slug
+// doesn't exist or isn't published yet (checked again here, not just by
+// callers, so this function is safe to call directly).
+export async function getPostBody(slug) {
+  const cached = getPrefetchedBody(slug)
+  if (cached != null) return cached
+
+  const meta = getPostMeta(slug)
+  if (!meta) return null
+
+  const loader = lazyBodyLoaders[meta.file]
+  if (!loader) return null
+
+  const raw = await loader()
+  const { body } = parseFrontmatter(raw)
+  return setPrefetchedBody(slug, body)
+}
+
 
 export function getAllSlugs() {
-  return allPosts.map((p) => p.slug)
+  return getAllPosts().map((p) => p.slug)
+}
+
+const MARKDOWN_SANITIZE_OPTIONS = {
+  allowedTags: [
+    "h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "ul", "ol", "li",
+    "strong", "em", "b", "i", "code", "pre", "blockquote", "hr", "br",
+    "table", "thead", "tbody", "tr", "th", "td", "del", "s", "img",
+  ],
+  allowedAttributes: {
+    a: ["href", "target", "rel"],
+    img: ["src", "alt", "title"],
+    code: ["class"], // marked tags fenced code blocks as class="language-xxx"
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+  // matches the rel/target already used on every other external link in
+  // this app (see e.g. RepoDetail.jsx's GitHub link)
+  transformTags: {
+    a: sanitizeHtml.simpleTransform("a", { target: "_blank", rel: "noopener noreferrer" }, true),
+  },
 }
 
 export function renderMarkdown(body) {
-  return marked.parse(body, { headerIds: false, mangle: false })
+  const raw = marked.parse(body, { headerIds: false, mangle: false })
+  // marked doesn't sanitize by default (its old `sanitize` option was
+  // removed years ago for being unreliable) - content here is author-only
+  // markdown today, not user input, so this isn't exploitable as written,
+  // but it costs nothing to make renderMarkdown() itself safe regardless of
+  // who ends up writing the input later. sanitize-html is pure JS with no
+  // DOM dependency, so it works identically here whether this runs in a
+  // real browser or during the Node-executed prerender build - a DOM-based
+  // sanitizer (DOMPurify, isomorphic-dompurify) was tried first and broke
+  // the prerender build, since that pipeline bundles this file through a
+  // "client" target regardless of where it actually executes, so package
+  // conditions meant for "pick the Node build here" resolve wrong.
+  return sanitizeHtml(raw, MARKDOWN_SANITIZE_OPTIONS)
 }
