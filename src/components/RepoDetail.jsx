@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { getCachedReadme, setCachedReadme, getSummary } from "../db.js"
+import { renderReadme } from "../lib/readme.js"
 import { StarIcon, ForkIcon } from "./Icons.jsx"
 
 const README_FETCH_TIMEOUT_MS = 6000
@@ -17,6 +18,7 @@ function fetchWithTimeout(url, signal, ms) {
 
 export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggleShelf, onClose }) {
   const [readme, setReadme] = useState("")
+  const [readmeBranch, setReadmeBranch] = useState(null)
   const [loading, setLoading] = useState(true)
   const [summaryState, setSummaryState] = useState(null)
   const [tab, setTab] = useState("readme")
@@ -45,14 +47,21 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
       setLoading(true)
       const cached = await getCachedReadme(repo.full_name)
       if (cached) {
+        // legacy cache entries (pre-branch-tracking) are a bare string -
+        // treat those as "branch unknown" rather than guessing wrong
+        const { content, branch } = typeof cached === "string"
+          ? { content: cached, branch: null }
+          : cached
         if (!ignore) {
-          setReadme(cached)
+          setReadme(content)
+          setReadmeBranch(branch)
           setLoading(false)
         }
         return
       }
       const branches = ["main", "master", "dev", "develop"]
       let content = null
+      let resolvedBranch = null
       outer: for (const branch of branches) {
         for (const filename of ["README.md", "readme.md"]) {
           try {
@@ -61,7 +70,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
               abortController.signal,
               README_FETCH_TIMEOUT_MS
             )
-            if (res.ok) { content = await res.text(); break outer }
+            if (res.ok) { content = await res.text(); resolvedBranch = branch; break outer }
           } catch {
             // this branch/filename doesn't exist (or timed out) - try the next one
           }
@@ -69,10 +78,14 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
       }
       if (ignore) return
       if (content) {
-        await setCachedReadme(repo.full_name, content)
-        if (!ignore) setReadme(content)
+        await setCachedReadme(repo.full_name, content, resolvedBranch)
+        if (!ignore) {
+          setReadme(content)
+          setReadmeBranch(resolvedBranch)
+        }
       } else if (!ignore) {
         setReadme(`# ${repo.name}\n\n${repo.description || "No README available."}`)
+        setReadmeBranch(null)
       }
       if (!ignore) setLoading(false)
     }
@@ -142,6 +155,11 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
   function handleBackdrop(e) {
     if (e.target === e.currentTarget) onClose()
   }
+
+  const readmeHtml = useMemo(
+    () => renderReadme(readme, repo.full_name, readmeBranch),
+    [readme, repo.full_name, readmeBranch]
+  )
 
   return (
     // click-outside-to-close is a mouse convenience layered on top of an
@@ -222,7 +240,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
           {tab === "readme" && (
             loading
               ? <div className="detail-loading mono">fetching readme...</div>
-              : <pre className="detail-readme">{readme}</pre>
+              : <div className="detail-readme" dangerouslySetInnerHTML={{ __html: readmeHtml }} />
           )}
           {tab === "info" && (
             <div className="detail-info">

@@ -141,15 +141,39 @@ input:focus, select:focus {
   overflow: hidden;
 }
 
-/* /catalogue route: App keeps its own natural height:100vh (from .app-layout
-   below), and the footer sits right after it in flow - same pattern as
-   .explore-wrap on the /explore/:slug pages. The page scrolls past the
-   catalogue to reach the footer, instead of the footer being pinned to the
-   bottom of the screen at all times. */
+/* /catalogue route: the footer sits right after App in flow, same pattern
+   as .explore-wrap on the /explore/:slug pages, so it's reachable by
+   scrolling the page rather than pinned to the screen. But App's own
+   internal repo-grid area normally scrolls *itself* (independent of the
+   page), which combined with the page also needing to scroll to reach the
+   footer gave two scrollbars at once. Here the whole page scrolls as a
+   single unit instead - App's internal areas render at their natural
+   height rather than a fixed, self-scrolling 100vh box, and the sidebar
+   is sticky so it still stays in view while you scroll. */
 .catalogue-wrap {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.catalogue-wrap .app-layout {
+  height: auto;
+  overflow: visible;
+}
+
+.catalogue-wrap .main-content {
+  overflow: visible;
+}
+
+.catalogue-wrap .sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 100vh;
+}
+
+.catalogue-wrap .grid-wrap {
+  overflow: visible;
 }
 
 .main-content {
@@ -1130,13 +1154,123 @@ input:focus, select:focus {
 }
 
 .detail-readme {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.73rem;
-  line-height: 1.75;
+  font-size: 0.82rem;
+  line-height: 1.7;
   color: var(--text2);
-  white-space: pre-wrap;
   word-break: break-word;
   animation: tabFadeIn 0.2s var(--ease);
+}
+
+.detail-readme h1,
+.detail-readme h2,
+.detail-readme h3,
+.detail-readme h4,
+.detail-readme h5,
+.detail-readme h6 {
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 24px 0 10px;
+}
+
+.detail-readme h1 { font-size: 1.15rem; }
+.detail-readme h2 { font-size: 1.02rem; }
+.detail-readme h3 { font-size: 0.92rem; }
+.detail-readme h4,
+.detail-readme h5,
+.detail-readme h6 { font-size: 0.85rem; }
+
+.detail-readme > :first-child { margin-top: 0; }
+
+.detail-readme p { margin: 0 0 14px; }
+
+.detail-readme ul,
+.detail-readme ol {
+  padding-left: 20px;
+  margin: 0 0 14px;
+}
+
+.detail-readme li {
+  margin-bottom: 5px;
+}
+
+.detail-readme a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s var(--ease);
+}
+
+.detail-readme a:hover { opacity: 0.75; }
+
+.detail-readme img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.detail-readme code {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85em;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent);
+}
+
+.detail-readme pre {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  overflow-x: auto;
+}
+
+.detail-readme pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text2);
+}
+
+.detail-readme blockquote {
+  border-left: 2px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  padding: 8px 14px;
+  margin: 0 0 14px;
+  border-radius: 0 4px 4px 0;
+  color: var(--text3);
+}
+
+.detail-readme hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+.detail-readme table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 16px;
+  font-size: 0.78rem;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.detail-readme th,
+.detail-readme td {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.detail-readme th {
+  background: var(--bg3);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .detail-info {
