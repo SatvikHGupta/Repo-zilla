@@ -141,23 +141,15 @@ input:focus, select:focus {
   overflow: hidden;
 }
 
-/* /catalogue route: App sits in a flex column with the footer instead of
-   claiming a fixed 100vh on its own - see CataloguePage in AppRouter.jsx.
-   Without this, App's own height:100vh above plus the footer's height
-   pushed the whole page taller than 100vh, so the page itself needed to
-   scroll to reach the footer *and* App's internal grid still scrolled on
-   its own - two scrollbars at once. This makes App flex to fill whatever
-   space is left after the footer, so only App's internal scroll remains. */
+/* /catalogue route: App keeps its own natural height:100vh (from .app-layout
+   below), and the footer sits right after it in flow - same pattern as
+   .explore-wrap on the /explore/:slug pages. The page scrolls past the
+   catalogue to reach the footer, instead of the footer being pinned to the
+   bottom of the screen at all times. */
 .catalogue-wrap {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-}
-
-.catalogue-wrap .app-layout {
-  height: auto;
-  flex: 1;
-  min-height: 0;
+  min-height: 100vh;
 }
 
 .main-content {
