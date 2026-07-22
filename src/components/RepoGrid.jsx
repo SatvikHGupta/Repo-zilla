@@ -10,9 +10,7 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
   const [page, setPage] = useState(1)
   const gridTopRef = useRef(null)
 
-  // debounce the search term before it drives the (potentially expensive,
-  // up to ~25k-row) Fuse.js query - the input itself stays instant, only
-  // the actual filtering waits a beat for typing to pause.
+  // debounce search term so the input stays instant while Fuse.js query waits for a pause
   const [debouncedSearch, setDebouncedSearch] = useState(search)
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS)
@@ -62,18 +60,14 @@ export default function RepoGrid({ repos, filters, search, userPins, userShelf, 
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
 
-  // reset to page 1 whenever the result set changes (filters, search, or layer switch).
-  // this is React's documented pattern for "adjusting state when a prop changes" -
-  // a conditional set during render, not an effect (effects + setState cause an extra
-  // wasted render and trip the new react-hooks/set-state-in-effect lint rule).
+  // reset to page 1 on result-set change; conditional set during render, not an effect
   const [prevFiltered, setPrevFiltered] = useState(filtered)
   if (filtered !== prevFiltered) {
     setPrevFiltered(filtered)
     setPage(1)
   }
 
-  // if the filtered set shrinks (e.g. a stricter filter), clamp the displayed page
-  // without needing another effect - just derive it at render time.
+  // clamp displayed page if the filtered set shrinks, derived at render time
   const safePage = Math.min(page, totalPages)
 
   const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)

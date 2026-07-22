@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/catalogue", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/catalogue", "destination": "/index.html" }],
+  "crons": [{ "path": "/api/check-publish", "schedule": "5 0 * * *" }],
+  "functions": {
+    "api/check-publish.js": { "includeFiles": "src/content/blog/**" }
+  }
 }

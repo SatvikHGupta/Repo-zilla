@@ -11,9 +11,7 @@ export default function ExplorePage({ slug }) {
 
   const [open, setOpen] = useState(false)
 
-  // measured (not calc()/CSS-var-guessed) height of the accordion's real
-  // content, so collapsing/expanding is a plain, deterministic max-height
-  // transition in both directions instead of a CSS grid-row trick.
+  // measured real content height for a deterministic max-height transition
   const accordionInnerRef = useRef(null)
   const [accHeight, setAccHeight] = useState(0)
 
@@ -26,10 +24,7 @@ export default function ExplorePage({ slug }) {
     return () => window.removeEventListener("resize", measure)
   }, [data])
 
-  // App itself doesn't remount when navigating from one /explore/:slug page
-  // to another (same route, same component instance) - so without this, its
-  // internal repo-grid keeps whatever scroll position it had on the
-  // previous category instead of starting at the top on the new one.
+  // same-route nav doesn't remount App, so scroll must be reset manually per category
   const catalogueRef = useRef(null)
   useEffect(() => {
     catalogueRef.current?.querySelector(".grid-wrap")?.scrollTo(0, 0)

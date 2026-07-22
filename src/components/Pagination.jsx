@@ -4,8 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "./Icons.jsx"
 export default function Pagination({ page, totalPages, onPageChange }) {
   const [gotoValue, setGotoValue] = useState("")
 
-  // clear the goto box if the page changed from elsewhere (prev/next buttons) -
-  // conditional set during render, see RepoGrid.jsx for why this isn't an effect.
+  // clear goto box on external page change; conditional set during render (see RepoGrid.jsx)
   const [prevPage, setPrevPage] = useState(page)
   if (page !== prevPage) {
     setPrevPage(page)

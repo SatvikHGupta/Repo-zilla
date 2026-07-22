@@ -29,10 +29,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
   const isPinned = userPins[repo.full_name] || repo.layer >= 2
   const isShelf = userShelf[repo.full_name] || repo.layer === 3
 
-  // reset to the readme tab whenever a different repo is opened - derived
-  // during render (same pattern as RepoGrid's page-reset) rather than an
-  // effect, since an effect that synchronously calls setState on mount
-  // trips react-hooks/set-state-in-effect and causes an extra render.
+  // reset to readme tab on repo change; derived during render to avoid an extra effect-triggered render
   const [prevRepo, setPrevRepo] = useState(repo)
   if (repo !== prevRepo) {
     setPrevRepo(repo)
@@ -110,10 +107,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
     return () => window.removeEventListener("keydown", onKey)
   }, [onClose])
 
-  // lock the underlying page's own scrollbar while this panel is open - the
-  // panel (.detail-body) has its own internal scroll, so without this the
-  // page shows two scrollbars at once (site's + panel's) any time the
-  // background page is taller than the viewport (e.g. the explore pages).
+  // lock page scroll while panel is open, so it doesn't double up with the panel's own scroll
   useEffect(() => {
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
@@ -122,9 +116,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
     }
   }, [])
 
-  // focus trap + focus management: move focus into the panel on open,
-  // keep Tab/Shift+Tab cycling inside it, and restore focus to whatever
-  // triggered the panel when it closes.
+  // focus trap: move focus in on open, cycle Tab within panel, restore focus on close
   useEffect(() => {
     triggerElRef.current = document.activeElement
     closeBtnRef.current?.focus()
@@ -162,10 +154,7 @@ export default function RepoDetail({ repo, userPins, userShelf, togglePin, toggl
   )
 
   return (
-    // click-outside-to-close is a mouse convenience layered on top of an
-    // already fully keyboard-accessible dialog (Escape closes it, there's
-    // a real focus-trapped close button, see the effects above) - this
-    // backdrop itself isn't meant to be its own tab stop.
+    // click-outside-to-close is a mouse-only convenience; dialog is already keyboard-accessible
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
       className="detail-backdrop"

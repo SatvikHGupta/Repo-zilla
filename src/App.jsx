@@ -89,9 +89,7 @@ export default function App({ initialType }) {
         setLoadingPct(90)
         setLoadingMsg("almost there...")
 
-        // main UI is ready - layer 0 (the full ~26k-repo "ALL" catalogue,
-        // an 18MB file) is loaded on demand the first time someone actually
-        // switches to that tab, not blindly for every visitor.
+        // layer 0 (~18MB "ALL" catalogue) loads on demand, not here
         setLoadingPct(100)
         setLoadingMsg("ready.")
         setTimeout(() => setLoading(false), 400)
@@ -119,11 +117,7 @@ export default function App({ initialType }) {
     return data
   }
 
-  // layer 0 ("ALL", ~18MB) is deliberately not loaded on app init - only
-  // fetch it the first time the user actually switches to that tab. The
-  // "is it loading" flag is derived from layerData itself (not a separate
-  // setState in the effect) so we don't trip react-hooks/set-state-in-effect;
-  // the ref just prevents firing the fetch twice.
+  // fetches layer 0 only on first switch to that tab; ref just guards against double-fetch
   const layer0RequestedRef = useRef(false)
   useEffect(() => {
     if (activeLayer !== 0 || layerData[0].length > 0 || layer0RequestedRef.current) return

@@ -1,6 +1,4 @@
-// Pure string-parsing helpers, no browser or Node-only APIs. Safe to import
-// from vite.config.js (Node, at build time) and from src/lib/blog.js
-// (browser + Node during prerendering).
+// pure string-parsing helpers, safe to import from both vite.config.js (Node) and blog.js (browser)
 
 export function parseFrontmatter(raw) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
@@ -34,8 +32,7 @@ export function parseFrontmatter(raw) {
 }
 
 export function makeExcerpt(body, length = 200) {
-  // strip the leading H1 (title is shown separately) and markdown syntax,
-  // then take the first real paragraph as a plain-text excerpt
+  // strip leading H1 + markdown syntax, take first real paragraph as excerpt
   const withoutH1 = body.replace(/^#\s+.+\n+/, "")
   const firstParagraph = withoutH1.split(/\n{2,}/).find((block) => block.trim() && !block.startsWith("#")) || ""
   const plain = firstParagraph
@@ -53,12 +50,7 @@ export function estimateReadingTime(body) {
   return Math.max(1, Math.round(words / 220))
 }
 
-// Single source of truth for the publish gate. UTC date-string comparison -
-// same absolute moment (00:00 UTC on the post's date) for every visitor
-// regardless of local timezone. A post at date D is invisible everywhere
-// until that instant, then visible everywhere, forever, with zero manual
-// step - every caller just needs to re-run this check, which happens
-// naturally on every page load / re-render.
+// single source of truth for the publish gate; UTC date-string comparison, same for every visitor
 export function isPublished(dateStr) {
   if (!dateStr) return false
   const today = new Date().toISOString().slice(0, 10)

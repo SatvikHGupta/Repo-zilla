@@ -14,41 +14,6 @@ See the [About page](https://repo-zilla.vercel.app/about) for how the scoring wo
 
 ---
 
-## Project structure
-
-```
-public/
-  data/
-    stats.json      # totals per layer, language/type breakdowns
-    layer0.json      # full pool - ~26k repos (post-verification)
-    layer1.json      # verified - 7,000 repos
-    layer2.json      # pinned - 1,750 repos
-    layer3.json      # shelf - 250 repos
-  icon.svg
-  icon.png
-  robots.txt
-  sitemap.xml
-  ads.txt
-
-src/
-  components/
-    LoadingScreen.jsx   # progressive load UI with percentage
-    Navbar.jsx           # layer tabs, search, theme toggle
-    Sidebar.jsx           # language/type/category filters, sort
-    RepoGrid.jsx          # card grid, Fuse.js fuzzy search
-    RepoCard.jsx           # individual card, pin/shelf actions
-    RepoDetail.jsx         # slide-in panel - README fetch + info tab
-    AdUnit.jsx              # manual AdSense slot (currently unused - site runs on Auto Ads)
-    Footer.jsx
-  pages/                     # HomePage, ExplorePage, AboutPage, PrivacyPage, ContactPage, etc.
-  hooks/
-    usePageMeta.js             # per-page title/meta tag hook
-  db.js                        # IndexedDB wrapper (idb) - layers, pins/shelf, README cache
-  App.jsx                       # root state - layers, filters, routing
-  main.jsx
-  index.css                      # CSS custom properties, theming, all component styles
-```
-
 ### The four layers
 
 | Layer | Label    | Size        | What it is                          |
@@ -107,31 +72,6 @@ Every layer file is cached in IndexedDB after first fetch - later visits skip th
 - **idb** - typed IndexedDB wrapper for layer caching + user state
 - **Space Mono + Space Grotesk** - typography
 - No CSS framework - hand-written CSS custom properties, full dark/light theming
-
----
-
-## Getting started
-
-```bash
-npm install
-npm run dev        # local dev server
-npm run build       # production build -> dist/
-npm run preview      # serve the production build locally
-```
-
-Data and icons are already in `public/` - nothing else to configure to run locally.
-
----
-
-## Deployment
-
-`npm run build` outputs a static `dist/` directory. Deploy anywhere that serves static files:
-
-- **Vercel** - connect the repo, output directory `dist` (this is what's live)
-- **Netlify** - drag `dist/` into the dashboard, or connect the repo with build command `npm run build`
-- **GitHub Pages** - push `dist/` to a `gh-pages` branch
-
-`public/data/` is ~24MB total. Fine as-is on Vercel/Netlify's CDN; if you're self-hosting, put it behind a CDN or enable compression.
 
 ---
 

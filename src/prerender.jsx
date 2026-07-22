@@ -4,25 +4,8 @@ import AppRouter from './AppRouter.jsx'
 import { getAllPosts, getPostBody } from './lib/blog.js'
 import { CATEGORIES } from './data/categories.js'
 
-// A note on why this file must never contain unpublished-post data:
-// vite-prerender-plugin adds this file as a real build input alongside the
-// client entry (so it can execute it during the build), and because it
-// shares module graph with the client entry (both import AppRouter.jsx),
-// Vite's preload-hint generator injects a <link rel="modulepreload"> for
-// this file's own chunk into EVERY prerendered HTML page - meaning every
-// visitor's browser proactively fetches it. That's harmless for the public
-// route metadata this file builds, but it means anything this file imports
-// is effectively public the moment it's deployed.
-//
-// (fs-based reads were tried here as an alternative to importing blog.js at
-// all, to sidestep this - but Vite bundles this file through its *client*
-// build pipeline, which externalizes node:fs/node:path/node:url rather than
-// providing real implementations, and the build fails outright. So the fix
-// has to be "make the data itself safe," not "avoid importing it here":
-// src/lib/blog-meta.generated.json - which blog.js imports, and which this
-// file transitively pulls in via getAllPosts()/getPostBody() below - is now
-// filtered to already-published posts at generation time, in vite.config.js.
-// See the comment there for what that trades off.)
+// this chunk gets modulepreloaded into every page, so anything imported here is effectively
+// public - safe only because blog-meta.generated.json is pre-filtered to published posts
 const BLOG_POSTS = getAllPosts()
 
 // per-route meta - title, description, canonical, OG tags
@@ -66,9 +49,7 @@ const ROUTE_META = {
   },
 }
 
-// every /explore/:slug route gets its route meta generated from the shared
-// category data (src/data/categories.js) - no manual edit needed here when
-// a category's copy or count changes, or a new category is added
+// route meta for each category, generated from categories.js
 for (const cat of CATEGORIES) {
   if (cat.slug === 'backend') continue // already set above with its own key
   ROUTE_META[`/explore/${cat.slug}`] = {
@@ -78,8 +59,7 @@ for (const cat of CATEGORIES) {
   }
 }
 
-// every blog post gets its own route meta generated from its frontmatter -
-// no manual edit needed here when a new post is added
+// route meta for each published post, generated from its frontmatter
 for (const post of BLOG_POSTS) {
   ROUTE_META[`/blog/${post.slug}`] = {
     title: `${post.title} - Repo Zilla Blog`,
@@ -122,12 +102,7 @@ export async function prerender(data) {
   const isBlogPost = url.startsWith('/blog/')
   const blogSlug = isBlogPost ? url.replace('/blog/', '') : null
 
-  // Body loading is lazy/code-split (see src/lib/blog.js) so BlogPostPage
-  // can't rely on it being available synchronously during renderToString,
-  // which doesn't wait for async effects. Pre-fetch it into the shared
-  // cache here first - only happens for slugs getAllPosts() actually
-  // returned, i.e. already-published ones, so an unpublished post's body
-  // chunk is never touched during the build at all.
+  // pre-fetch the body since renderToString can't wait on the lazy loader in blog.js
   if (blogSlug && BLOG_POSTS.some((p) => p.slug === blogSlug)) {
     await getPostBody(blogSlug)
   }

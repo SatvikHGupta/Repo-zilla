@@ -22,14 +22,7 @@ function stripLeadingH1(body) {
 export default function BlogPostPage({ slug }) {
   const post = getPostMeta(slug)
 
-  // Body loads lazily/code-split (see src/lib/blog.js) - not bundled
-  // eagerly, so it's not sitting in plain JS for every visitor on every
-  // page load. During prerendering, src/prerender.jsx pre-fetches this
-  // into the cache before render, so already-published posts still get
-  // full real content baked into the static HTML for SEO. In a normal
-  // browser load the cache starts empty, so this fetches on mount - a
-  // brief "loading" state is expected here, that's the actual tradeoff of
-  // going lazy instead of eager.
+  // body loads lazily (blog.js); prerender.jsx pre-fetches it for SEO, browser fetches on mount
   const [body, setBody] = useState(() => (post ? getPrefetchedBody(slug) : null))
 
   useEffect(() => {
@@ -74,8 +67,7 @@ export default function BlogPostPage({ slug }) {
 
   const html = renderMarkdown(stripLeadingH1(body))
 
-  // split the rendered HTML roughly in half (by top-level <h2> boundary) to
-  // slot an ad unit mid-article once real ad slots exist
+  // split rendered HTML roughly in half (top-level <h2>) to slot an ad mid-article
   const sections = html.split(/(?=<h2)/)
   const mid = Math.ceil(sections.length / 2)
   const firstHalf = sections.slice(0, mid).join("")

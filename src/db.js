@@ -53,11 +53,7 @@ export async function setSummary(fullName, content) {
   await db.put("summaries", content, fullName);
 }
 
-// stores { content, branch } - branch is needed to resolve READMEs' relative
-// image/link paths (e.g. "./assets/logo.png") into real absolute URLs.
-// getCachedReadme can also return a bare string here if it was cached before
-// this shape changed - callers should treat that as "no known branch" and
-// leave relative URLs unresolved rather than guessing wrong.
+// stores { content, branch }; may return a bare legacy string - treat that as "no known branch"
 export async function getCachedReadme(fullName) {
   const db = await getDB();
   return db.get("readmes", fullName);

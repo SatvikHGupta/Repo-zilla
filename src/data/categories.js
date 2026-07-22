@@ -1,13 +1,5 @@
-// Single source of truth for the 13 project-type categories used across
-// the homepage grid, the /explore/:slug pages, prerendered route metadata,
-// and the sitemap. Previously this same data (slug, title, description,
-// count, intro copy) was hand-duplicated across four separate files, which
-// meant every dataset refresh risked drifting out of sync in three of the
-// four places nobody remembered to update.
-//
-// `count` still needs a manual bump when the underlying dataset changes -
-// it isn't derived from public/data/stats.json automatically (yet), but at
-// least now there's exactly one number to update instead of five.
+// single source of truth for the 13 categories: homepage grid, /explore/:slug, route meta, sitemap
+// `count` needs a manual bump when the dataset changes - not derived from stats.json (yet)
 export const CATEGORIES = [
   {
     slug: "backend",

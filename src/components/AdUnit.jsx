@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react"
 
-// push() must be called client-side after the adsbygoogle script loads.
-// each instance handles its own push so units are independent.
+// push() runs client-side once adsbygoogle loads; each instance pushes independently
 export default function AdUnit({ slot, format = "auto", style = {} }) {
   const ref = useRef(null)
   const pushed = useRef(false)
@@ -17,8 +16,7 @@ export default function AdUnit({ slot, format = "auto", style = {} }) {
     }
   }, [slot])
 
-  // no real ad-slot ID yet (pre-AdSense-approval) — render nothing rather
-  // than ship an <ins> tag with an invalid empty data-ad-slot
+  // no ad-slot ID yet (pre-AdSense-approval) - avoid an <ins> with an invalid empty slot
   if (!slot) return null
 
   return (

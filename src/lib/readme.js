@@ -11,10 +11,7 @@ function isAbsolute(url) {
   return /^(https?:)?\/\//i.test(url) || /^(mailto:|data:|tel:|#)/i.test(url)
 }
 
-// READMEs almost always reference paths relative to the repo root (the
-// README itself lives at the root), so this resolves against root rather
-// than trying to track a "current directory" - covers the vast majority of
-// real-world READMEs without the complexity of full relative-path resolution.
+// resolves relative paths against repo root, not a tracked "current directory"
 function resolveUrl(url, fullName, branch, isImage) {
   if (!url || isAbsolute(url)) return url
   const clean = url.replace(/^\.?\//, "")
@@ -40,10 +37,7 @@ function resolveRelativeUrls(markdown, fullName, branch) {
     })
 }
 
-// renders a fetched README to sanitized HTML, with relative image/link
-// paths rewritten to real absolute URLs first (branch is required for that -
-// pass null/undefined to skip rewriting, e.g. for a legacy cached entry that
-// predates branch tracking, so we don't guess a possibly-wrong branch).
+// branch is required to rewrite relative URLs; pass null to skip (e.g. legacy cache entries)
 export function renderReadme(markdown, fullName, branch) {
   const resolved = branch ? resolveRelativeUrls(markdown, fullName, branch) : markdown
   return renderMarkdown(resolved)

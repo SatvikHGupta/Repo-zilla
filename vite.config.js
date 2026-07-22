@@ -6,10 +6,7 @@ import { resolve } from 'node:path'
 import { parseFrontmatter, makeExcerpt, estimateReadingTime, isPublished } from './src/lib/blogParse.js'
 import { CATEGORIES } from './src/data/categories.js'
 
-// Vercel (and most static hosts) auto-serve a root-level 404.html with a
-// real HTTP 404 status for any unmatched path. The prerender plugin only
-// writes routes to their own folder (dist/404/index.html), so this copies
-// it to dist/404.html after the build.
+// Vercel needs dist/404.html for real 404 status; prerender only writes dist/404/index.html
 function copy404Plugin() {
   return {
     name: 'copy-404-to-root',
@@ -21,9 +18,7 @@ function copy404Plugin() {
   }
 }
 
-// reads every .md file in src/content/blog/ and pulls its `slug:` field, so
-// adding a new blog post never requires touching this config file — drop
-// the .md file in, it's prerendered automatically on the next build.
+// new .md file in src/content/blog/ is auto-prerendered, no config changes needed
 function getBlogSlugs() {
   const dir = resolve(__dirname, 'src/content/blog')
   if (!existsSync(dir)) return []
@@ -39,14 +34,7 @@ function getBlogSlugs() {
 
 const blogRoutes = getBlogSlugs().map((slug) => `/blog/${slug}`)
 
-// Generates src/lib/blog-meta.generated.json - title/date/category/tags/
-// excerpt/readingTime for every post, and NOTHING else. Deliberately never
-// touches the full markdown body: the body stays out of this file so it can
-// stay out of the eagerly-loaded browser bundle too (see blog.js, which
-// loads bodies lazily/code-split instead of eagerly). Runs on buildStart so
-// it's always fresh for both `vite dev` and `vite build`. The generated
-// file is committed so a fresh checkout always has a valid one to import
-// even before the first build runs.
+// generates blog-meta.generated.json (metadata only, no body - keeps bodies lazy-loaded in blog.js)
 function generateBlogMetaPlugin() {
   return {
     name: 'generate-blog-meta',
@@ -67,27 +55,11 @@ function generateBlogMetaPlugin() {
                 tags: Array.isArray(meta.tags) ? meta.tags : [],
                 excerpt: makeExcerpt(body),
                 readingTime: estimateReadingTime(body),
-                // exact key import.meta.glob() uses in blog.js, so a slug
-                // can be mapped back to its lazy body loader
-                file: `/src/content/blog/${f}`,
+                file: `/src/content/blog/${f}`, // key blog.js's import.meta.glob() uses
               }
             })
             .filter(Boolean)
-            // Filter HERE, at generation time - not just when blog.js reads
-            // this file back. This file is what src/lib/blog.js imports
-            // (and, transitively, whatever bundle ends up importing THAT),
-            // so any post that shouldn't be public yet must never be
-            // written into it in the first place. See the long comment in
-            // src/prerender.jsx for the full story of why "filter on read"
-            // isn't good enough here.
-            //
-            // Real consequence of this: a post becomes visible starting
-            // from the first BUILD that runs on or after its publish date,
-            // not the instant a visitor's clock crosses that date within an
-            // already-deployed session. If you want same-day publishing
-            // without remembering to redeploy, wire a scheduled rebuild
-            // (Vercel Cron Job -> Deploy Hook) to run daily; without one,
-            // "live" means "live as of your next deploy on/after the date."
+            // filtered here (not just on read) so unpublished posts never enter blog.js's bundle
             .filter((e) => isPublished(e.date))
         : []
 
@@ -105,9 +77,7 @@ const STATIC_ROUTES = [
   ...CATEGORIES.map((cat) => ({
     loc: `/explore/${cat.slug}`,
     changefreq: 'weekly',
-    // larger categories get a slightly higher priority, same tiering the
-    // old hand-written list used (backend..python at 0.9, the rest at 0.8)
-    priority: cat.count >= 1800 ? '0.9' : '0.8',
+    priority: cat.count >= 1800 ? '0.9' : '0.8', // larger categories rank slightly higher
   })),
   { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
   { loc: '/about', changefreq: 'monthly', priority: '0.7' },
@@ -115,8 +85,7 @@ const STATIC_ROUTES = [
   { loc: '/contact', changefreq: 'monthly', priority: '0.5' },
 ]
 
-// generates dist/sitemap.xml from the static route list above plus every
-// blog post's real slug + publish date — new posts appear here automatically
+// generates dist/sitemap.xml: static routes + every published blog post
 function generateSitemapPlugin() {
   return {
     name: 'generate-sitemap',

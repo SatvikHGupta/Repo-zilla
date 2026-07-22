@@ -76,6 +76,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://repo-zilla.vercel.app/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://repo-zilla.vercel.app/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -89,5 +94,59 @@
     <loc>https://repo-zilla.vercel.app/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/booklore-single-maintainer-burnout-2026</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/geo-eating-seo-2026</loc>
+    <lastmod>2026-07-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/median-github-repo-stats-2026</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/mern-stack-cargo-cult-2026</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/npm-install-checklist-real-examples-2026</loc>
+    <lastmod>2026-06-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/oldest-github-repo-still-active-2026</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/github-repo-momentum-score-2026</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/reverse-engineered-repo-scoring-formula-2026</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://repo-zilla.vercel.app/blog/zombie-github-repos-high-stars-stale-2026</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
