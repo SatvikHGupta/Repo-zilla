@@ -1,0 +1,13 @@
+.wrap { position: relative; }
+.field { display: flex; align-items: center; gap: var(--s2); height: 38px; padding: 0 var(--s3); border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-sunken); color: var(--text-muted); transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease); }
+.field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+.input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: none; color: var(--text); font-size: 14px; outline: none; }
+.input::placeholder { color: var(--text-faint); }
+.list { position: absolute; inset: calc(100% + 4px) 0 auto 0; z-index: 20; max-height: 280px; overflow: auto; padding: var(--s1); border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-lg); }
+.opt { display: flex; align-items: center; gap: var(--s2); padding: 8px var(--s3); border-radius: var(--r-sm); cursor: pointer; font-size: 14px; }
+.on { background: var(--surface-hover); }
+.tag { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 13px; }
+.autoLabel { padding: 1px 6px; border: 1px dashed var(--border-strong); border-radius: var(--r-sm); color: var(--text-muted); font-size: 11px; }
+.count { color: var(--text-faint); font-size: 12px; }
+.none { padding: var(--s3); color: var(--text-muted); font-size: 13.5px; }
+@media (pointer: coarse) { .field { height: 44px; } .input { font-size: 16px; } }

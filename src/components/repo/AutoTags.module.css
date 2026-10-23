@@ -1,0 +1,7 @@
+.list { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.label { padding: 2px 8px; border-radius: var(--r-sm); background: var(--accent-subtle); color: var(--accent-link); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.tag { overflow: hidden; text-overflow: ellipsis; }
+.dot { width: 6px; height: 6px; margin-left: 2px; border-radius: 50%; background: var(--text-faint); }
+.high { background: var(--success); }
+.medium { background: var(--warning); }
+.low { background: var(--text-faint); }

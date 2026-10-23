@@ -1,0 +1,13 @@
+.row { display: flex; align-items: center; gap: var(--s2); min-height: 32px; padding: 3px var(--s2); margin-inline: calc(var(--s2) * -1); border-radius: var(--r-sm); cursor: pointer; transition: background-color var(--dur-fast) var(--ease); }
+.row:hover { background: var(--surface-hover); }
+.indent { padding-left: calc(var(--s2) + 22px); }
+.box { display: grid; place-items: center; flex: none; width: 16px; height: 16px; border: 1.5px solid var(--border-strong); border-radius: 5px; background: var(--surface-sunken); color: var(--accent-fg); transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease); }
+.radio { border-radius: 50%; }
+.row:has(input:checked) .box { background: var(--accent); border-color: var(--accent); }
+.row:has(input:checked) .radio { box-shadow: inset 0 0 0 3px var(--surface); }
+.row:has(input:focus-visible) .box { outline: 2px solid var(--accent); outline-offset: 2px; }
+.label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.count { color: var(--text-faint); font-size: 12px; }
+@media (pointer: coarse) { .row { min-height: 42px; } .box { width: 20px; height: 20px; } }
+.pending { opacity: 0.4; }
+.count { transition: opacity var(--dur) var(--ease); }

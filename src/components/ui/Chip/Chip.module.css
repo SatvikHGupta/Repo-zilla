@@ -1,0 +1,18 @@
+.chip { animation: pop-in 0.22s var(--ease) backwards; display: inline-flex; align-items: center; gap: 5px; max-width: 100%; min-height: 24px; padding: 2px 9px; border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--surface-raised); color: var(--text-muted); font-size: 12.5px; font-weight: 550; line-height: 1.25; }
+.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mono { font-family: var(--font-mono); font-size: 12px; }
+.accent { background: var(--accent-subtle); border-color: rgba(var(--accent-rgb), 0.35); color: var(--accent-link); }
+.auto { background: transparent; border-style: dashed; border-color: var(--border-strong); color: var(--text-muted); }
+.good { background: var(--success-bg); border-color: transparent; color: var(--success); }
+.warn { background: var(--warning-bg); border-color: transparent; color: var(--warning); }
+.danger { background: var(--danger-bg); border-color: transparent; color: var(--danger); }
+.muted { color: var(--text-muted); background: transparent; }
+.btn { cursor: pointer; transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+.btn:hover { background: var(--surface-hover); border-color: var(--border-strong); color: var(--text); }
+.removable { padding-right: 3px; }
+.x { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 2px; border: 0; border-radius: 50%; background: transparent; color: inherit; opacity: 0.75; transition: background-color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease); }
+.x:hover { background: rgba(var(--accent-rgb), 0.22); opacity: 1; }
+@media (pointer: coarse) { .x { width: 28px; height: 28px; } }
+@media (pointer: coarse) { .btn { min-height: 34px; padding-inline: 12px; } }
+
+@keyframes pop-in { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: none; } }

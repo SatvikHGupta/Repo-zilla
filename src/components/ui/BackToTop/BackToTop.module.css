@@ -1,0 +1,5 @@
+.btn { position: fixed; right: var(--s5); bottom: calc(var(--s5) + var(--safe-b)); z-index: 45; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border-strong); border-radius: 50%; background: var(--surface); color: var(--text); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(12px) scale(0.9); pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease); }
+.on { opacity: 1; transform: none; pointer-events: auto; }
+.btn:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--accent-link); }
+.btn:active { transform: scale(0.94); }
+@media (max-width: 640px) { .btn { bottom: calc(var(--bottom-nav-h) + var(--s4) + var(--safe-b)); right: var(--s4); } }

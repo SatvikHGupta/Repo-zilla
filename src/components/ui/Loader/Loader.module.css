@@ -1,0 +1,33 @@
+.boot { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s3); padding: var(--s16) var(--s6); min-height: 50vh; text-align: center; }
+.bootLabel { margin-top: var(--s2); font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+.hint { color: var(--text-muted); font-size: 14px; max-width: 38ch; }
+.bar { position: relative; width: 168px; height: 3px; margin-top: var(--s3); border-radius: var(--r-pill); background: var(--border); overflow: hidden; }
+.bar i, .top i { position: absolute; inset: 0 auto 0 0; width: 38%; border-radius: inherit; background: var(--accent-gradient); animation: slide 1.15s var(--ease) infinite; }
+.panel { display: flex; flex-direction: column; align-items: center; gap: var(--s3); padding: var(--s12) var(--s6); }
+
+.inline { display: inline-flex; align-items: center; gap: var(--s2); color: var(--text-muted); font-size: 13px; }
+.dots { display: inline-flex; gap: 3px; }
+.dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 1s var(--ease) infinite; }
+.dots i:nth-child(2) { animation-delay: 0.15s; }
+.dots i:nth-child(3) { animation-delay: 0.3s; }
+
+.top { position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 90; overflow: hidden; opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease); }
+.topOn { opacity: 1; }
+.topOn i { width: 30%; }
+.top i { width: 30%; }
+
+.sk { display: block; background: linear-gradient(100deg, var(--surface-raised) 30%, var(--surface-hover) 50%, var(--surface-raised) 70%); background-size: 220% 100%; border-radius: var(--r-sm); animation: shimmer 1.5s linear infinite; }
+.skGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: var(--s4); }
+.skRows { display: flex; flex-direction: column; gap: var(--s2); }
+.skCard, .skRow { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+.skRow { padding: var(--s3) var(--s4); gap: var(--s2); }
+.skHead { display: flex; gap: var(--s3); align-items: center; }
+.skCol { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.skTags { display: flex; gap: var(--s2); }
+.skFoot { display: flex; gap: var(--s4); margin-top: var(--s2); }
+.skReadme { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s2) 0; }
+.skCode { display: flex; flex-direction: column; gap: var(--s2); padding: var(--s4); border-radius: var(--r-md); background: var(--code-bg); }
+
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(360%); } }
+@keyframes shimmer { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
+@keyframes pulse { 0%, 100% { opacity: 0.25; } 40% { opacity: 1; } }

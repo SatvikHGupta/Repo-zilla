@@ -1,0 +1,5 @@
+.head { display: flex; flex-direction: column; gap: var(--s2); padding-block: var(--s8) 0; }
+.crumb { color: var(--text-muted); font-size: 13.5px; }
+.title { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -0.035em; }
+.sub { color: var(--text-muted); }
+.sub b { color: var(--text); }

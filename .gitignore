@@ -1,0 +1,28 @@
+# Only the working site goes to GitHub. Everything else in this folder stays on this PC.
+# (the 2+ GB data export, wrangler state, node_modules, dist, deployment records ...)
+/*
+!/.gitignore
+!/package.json
+!/package-lock.json
+!/index.html
+!/vite.config.js
+!/eslint.config.js
+!/vercel.json
+!/README.md
+!/.env.development
+!/.env.production
+!/.env.example
+!/src/
+!/public/
+!/vite/
+
+# safety nets inside the allowed folders: data, logs and local env overrides never go up
+*.log
+.env.local
+.env.*.local
+*.gz
+*.ndjson
+*.zip
+*.bin
+cloudflare-data*/
+.DS_Store

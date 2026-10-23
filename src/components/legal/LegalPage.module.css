@@ -1,0 +1,14 @@
+.page { max-width: 780px; padding-block: var(--s10) var(--s16); }
+.back { margin: 0 0 var(--s5) calc(var(--s3) * -1); }
+.head { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s8); }
+.head h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.035em; }
+.updated { color: var(--text-faint); font-size: 13px; font-family: var(--font-mono); }
+.intro { color: var(--text-muted); font-size: 17px; line-height: 1.6; }
+.body { display: flex; flex-direction: column; gap: var(--s6); }
+.body h2 { margin-bottom: var(--s2); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.body p, .body li { color: var(--text-muted); line-height: 1.7; }
+.body p + p { margin-top: var(--s3); }
+.body ul { display: grid; gap: var(--s2); padding-left: var(--s5); list-style: disc; }
+.body b, .body strong { color: var(--text); }
+.body code { padding: 0.1em 0.4em; border-radius: 5px; background: var(--code-bg); font-size: 0.9em; }
+.more { display: flex; gap: var(--s5); margin-top: var(--s10); padding-top: var(--s5); border-top: 1px solid var(--border); font-weight: 600; }

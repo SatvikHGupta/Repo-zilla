@@ -1,0 +1,19 @@
+.hero { display: flex; flex-direction: column; align-items: center; gap: var(--s5); padding-block: clamp(40px, 9vw, 96px) var(--s6); text-align: center; }
+.title { max-width: 18ch; font-size: clamp(36px, 7vw, 68px); font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; }
+.title span { color: var(--accent-link); }
+.lead { max-width: 58ch; color: var(--text-muted); font-size: clamp(15px, 2.2vw, 18px); }
+.lead b { color: var(--text); }
+.search { width: 100%; max-width: 720px; margin-top: var(--s2); }
+.section { padding-block: var(--s8) 0; }
+.head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s5); }
+.head h2, .know h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.all { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; }
+.know { padding-bottom: var(--s6); }
+.know ul { display: grid; gap: var(--s2); margin: var(--s4) 0; padding-left: var(--s5); color: var(--text-muted); list-style: disc; }
+.heroWrap { position: relative; overflow: clip; }
+.heroWrap::before { content: ''; position: absolute; inset: 0; background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 30%), rgba(var(--accent-rgb), 0.13), transparent 65%); transition: opacity 0.4s var(--ease); pointer-events: none; }
+.title, .lead { animation: rise 0.7s var(--ease) backwards; }
+.lead { animation-delay: 0.08s; }
+.search { animation: rise 0.7s var(--ease) 0.16s backwards; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }

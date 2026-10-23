@@ -1,0 +1,20 @@
+.page { display: flex; flex-direction: column; gap: var(--s6); padding-block: var(--s8) var(--s12); }
+.head { display: flex; flex-direction: column; gap: var(--s2); max-width: 70ch; }
+.head h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -0.035em; }
+.head p { color: var(--text-muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: var(--s4); }
+.card { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s5); border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); }
+.top { display: flex; align-items: baseline; gap: var(--s3); color: var(--text); text-decoration: none !important; }
+.name { flex: 1; font-size: 18px; font-weight: 700; letter-spacing: -0.015em; }
+.count { color: var(--accent-link); font-size: 14px; font-weight: 600; }
+.go { align-self: center; color: var(--text-faint); transition: transform var(--dur) var(--ease), color var(--dur) var(--ease); }
+.top:hover .go { color: var(--accent-link); transform: translateX(3px); }
+.subs { display: flex; flex-wrap: wrap; gap: 6px; }
+.fallback { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); padding: var(--s4) var(--s5); border: 1px dashed var(--border-strong); border-radius: var(--r-lg); color: var(--text-muted); text-decoration: none !important; }
+.fallback:hover { border-color: var(--accent); color: var(--text); }
+.fallback b { color: var(--text); }
+.mode { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s4); padding: var(--s3) var(--s4); border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); }
+.modeLabel { color: var(--text-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.mode p { flex: 1 1 260px; color: var(--text-muted); font-size: 13.5px; }
+.pending { opacity: 0.4; }
+.count { transition: opacity var(--dur) var(--ease); }

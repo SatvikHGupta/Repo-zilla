@@ -1,0 +1,17 @@
+.wrap { position: relative; width: 100%; }
+.field { display: flex; align-items: center; gap: var(--s3); height: 60px; padding: 0 var(--s5); border: 1px solid var(--border-strong); border-radius: var(--r-xl); background: var(--surface); color: var(--text-muted); box-shadow: var(--shadow-md); transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease); }
+.field:focus-within { border-color: var(--accent); color: var(--accent-link); box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-subtle); }
+.input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: none; color: var(--text); font-size: 17px; outline: none; }
+.input::placeholder { color: var(--text-faint); }
+.list { position: absolute; inset: calc(100% + 8px) 0 auto 0; z-index: 30; max-height: min(460px, 70vh); overflow-y: auto; padding: var(--s2); border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-lg); text-align: left; }
+.opt { display: flex; align-items: center; gap: var(--s3); padding: 9px var(--s3); border-radius: var(--r-md); cursor: pointer; }
+.on { background: var(--surface-hover); }
+.main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14.5px; font-weight: 600; }
+.name code { font-size: 13px; color: var(--accent-link); }
+.sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: 12.5px; }
+.meta { display: inline-flex; align-items: center; gap: 4px; flex: none; color: var(--text-muted); font-size: 12.5px; }
+.lang { flex: none; color: var(--text-faint); font-size: 12px; }
+.ico { display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: var(--r-sm); background: var(--accent-subtle); color: var(--accent-link); }
+.note { padding: var(--s3); color: var(--text-muted); font-size: 13.5px; }
+@media (max-width: 640px) { .field { height: 54px; padding: 0 var(--s4); } .input { font-size: 16px; } .lang { display: none; } }

@@ -1,0 +1,14 @@
+.sec { border-top: 1px solid var(--border); }
+.sec:first-child { border-top: 0; }
+.h { margin: 0; font-size: inherit; }
+.btn { display: flex; transition: color var(--dur-fast) var(--ease); align-items: center; gap: var(--s2); width: 100%; min-height: 44px; padding: 0; border: 0; background: none; color: var(--text); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-align: left; }
+.btn > span:first-child { flex: 1; }
+.btn:hover { color: var(--accent-link); }
+.btn svg { color: var(--text-muted); transition: transform var(--dur) var(--ease); }
+.up { transform: rotate(180deg); }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-fg); font-size: 11.5px; font-weight: 700; }
+.collapse { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.3s var(--ease), opacity 0.22s var(--ease); }
+.collapse[data-open='true'] { grid-template-rows: 1fr; opacity: 1; }
+.inner { min-height: 0; overflow: hidden; }
+.visible { overflow: visible; }
+.body { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--s4); }
