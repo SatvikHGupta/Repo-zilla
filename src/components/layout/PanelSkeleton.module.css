@@ -1,0 +1,6 @@
+.root { position: fixed; inset: 0; z-index: 90; display: flex; justify-content: flex-end; }
+.scrim { position: absolute; inset: 0; background: var(--scrim); animation: fade 0.2s var(--ease); }
+.panel { position: relative; display: flex; align-items: center; justify-content: center; width: min(820px, 100vw); height: 100%; border-left: 1px solid var(--border-strong); background: var(--bg); box-shadow: var(--shadow-lg); animation: fade 0.2s var(--ease); }
+@media (max-width: 768px) { .root { align-items: flex-end; } .panel { width: 100%; height: calc(100dvh - 20px); border-radius: var(--r-xl) var(--r-xl) 0 0; } }
+
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }

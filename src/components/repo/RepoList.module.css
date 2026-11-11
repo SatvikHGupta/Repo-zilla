@@ -1,0 +1,11 @@
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: var(--s4); }
+.table { display: flex; flex-direction: column; gap: var(--s2); }
+.rows { display: flex; flex-direction: column; gap: var(--s2); }
+.head { display: none; }
+@media (min-width: 1000px) {
+  .head { white-space: nowrap; display: grid; grid-template-columns: 44px minmax(0, 1fr) 112px 120px 116px 36px; gap: 0 var(--s3); padding: 0 var(--s4) 0 var(--s3); color: var(--text-faint); font-size: 13px; font-weight: 600; }
+  .hRank { text-align: right; padding-right: var(--s1); }
+}
+/* compact density: more, smaller cards per row and tighter rows (the items themselves shrink, see RepoCard and RepoRow) */
+.compact.grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--s2); }
+.compact .rows { gap: 3px; }

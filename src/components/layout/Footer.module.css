@@ -1,0 +1,31 @@
+.footer { margin-top: var(--s16); border-top: 1px solid var(--border-strong); background: var(--surface-sunken); color: var(--text-muted); font-size: 14px; }
+.main { display: grid; grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 0.6fr)); gap: var(--s8); padding-block: var(--s8) var(--s6); }
+
+.about { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s3); max-width: 38ch; }
+.about p { line-height: 1.6; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 18px; font-weight: 600; letter-spacing: -0.02em; text-decoration: none !important; }
+.brand b { font-weight: 800; color: var(--accent-link); }
+.social { display: flex; gap: var(--s2); margin-top: var(--s1); }
+.icon { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--surface); color: var(--text-muted); transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+.icon:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--accent-link); }
+
+.col h2 { margin-bottom: var(--s3); color: var(--text); font-size: 13px; font-weight: 650; }
+.col ul { display: flex; flex-direction: column; gap: 2px; }
+.col a { display: inline-block; padding: 4px 0; color: var(--text-muted); font-weight: 550; text-decoration: none; transition: color var(--dur-fast) var(--ease); }
+.col a:hover { color: var(--accent-link); }
+
+/* the strip at the bottom: the independence note and the snapshot, stopping short of the right edge where the floating Top button is */
+.bar { border-top: 1px solid var(--border); }
+.footer .barIn { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s1) var(--s6); padding-block: var(--s4); padding-right: calc(var(--s5) + 96px); color: var(--text-faint); font-size: 12.5px; }
+
+:global(html[data-mode='light']) .icon { box-shadow: var(--shadow-sm); }
+
+@media (max-width: 860px) {
+  .main { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s6); padding-block: var(--s6) var(--s5); }
+  .about { grid-column: 1 / -1; max-width: none; }
+}
+@media (max-width: 640px) {
+  .footer { margin-bottom: calc(var(--bottom-nav-h) + var(--safe-b)); }
+  .footer .barIn { flex-direction: column; padding-right: var(--s4); }
+}
+@media (pointer: coarse) { .col a { min-height: 44px; display: inline-flex; align-items: center; } .icon { width: 44px; height: 44px; } }

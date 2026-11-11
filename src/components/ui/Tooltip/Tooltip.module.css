@@ -1,0 +1,7 @@
+.tip { position: fixed; z-index: 200; max-width: min(280px, calc(100vw - 16px)); padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font-size: 12.5px; font-weight: 500; line-height: 1.4; box-shadow: var(--shadow-md); pointer-events: none; opacity: 0; transition: opacity var(--dur-fast) var(--ease); }
+.on { opacity: 1; }
+/* the little arrow, a rotated square that shares the tooltip's fill and border */
+.tip::after { content: ''; position: absolute; left: var(--ax, 50%); width: 8px; height: 8px; background: var(--surface); border: 1px solid var(--border-strong); transform: translateX(-50%) rotate(45deg); }
+.above::after { bottom: -5px; border-top-color: transparent; border-left-color: transparent; }
+.below::after { top: -5px; border-bottom-color: transparent; border-right-color: transparent; }
+@media (prefers-reduced-motion: reduce) { .tip { transition: none; } }

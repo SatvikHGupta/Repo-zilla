@@ -1,0 +1,10 @@
+.root { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
+.scrim { position: absolute; inset: 0; background: var(--scrim); }
+.sheet { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 640px; max-height: calc(100dvh - 32px - var(--safe-t)); border: 1px solid var(--border-strong); border-bottom: 0; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--surface); box-shadow: var(--shadow-lg); outline: none; }
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s3) var(--s4) var(--s3) var(--s5); border-bottom: 1px solid var(--border); }
+.title { font-size: 16px; font-weight: 650; }
+.body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: var(--s4) var(--s5); }
+.foot { padding: var(--s3) var(--s5) calc(var(--s3) + var(--safe-b)); border-top: 1px solid var(--border); background: var(--surface); }
+.grab { display: flex; justify-content: center; padding: 10px 0 0; cursor: grab; touch-action: none; }
+.grab i { width: 40px; height: 4px; border-radius: 4px; background: var(--border-strong); }
+.head { padding-top: var(--s2); }
