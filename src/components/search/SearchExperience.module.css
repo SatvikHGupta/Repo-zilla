@@ -1,0 +1,22 @@
+.page { display: flex; flex-direction: column; gap: var(--s5); padding-block: var(--s6) var(--s12); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s6); align-items: start; }
+@media (min-width: 1024px) { .layout { grid-template-columns: var(--rail-w) minmax(0, 1fr); } }
+.rail { position: sticky; top: calc(var(--nav-h) + var(--s4)); max-height: calc(100dvh - var(--nav-h) - var(--s8)); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: var(--s2) var(--s4) var(--s4); border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); }
+.results { display: flex; flex-direction: column; gap: var(--s4); min-width: 0; }
+.bar { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s3); scroll-margin-top: calc(var(--nav-h) + var(--s4)); }
+.count { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.total { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.total b { color: var(--text); font-size: 22px; }
+.range { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin: 0; color: var(--text-muted); font-size: 13px; }
+.range > span { padding: 0 8px; border-radius: var(--r-pill); background: var(--surface-sunken); color: var(--text); font-size: 12px; line-height: 20px; }
+.range i { width: 3px; height: 3px; border-radius: 50%; background: var(--text-faint); }
+.tools { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s2); }
+.layoutToggle { display: inline-flex; padding: 2px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-sunken); }
+.autoLine { display: flex; align-items: center; gap: var(--s2); color: var(--text-muted); font-size: 13px; }
+.autoLine svg { flex: none; color: var(--accent-link); }
+.stale { opacity: 0.55; transition: opacity var(--dur) var(--ease); pointer-events: none; }
+.sheetFoot { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.sheetFoot > :last-child { flex: 1; max-width: 260px; }
+@media (max-width: 640px) { .page { padding-top: var(--s4); } .tools { width: 100%; justify-content: space-between; } }
+
+:global(html[data-mode='light']) .rail { box-shadow: var(--shadow-sm); }

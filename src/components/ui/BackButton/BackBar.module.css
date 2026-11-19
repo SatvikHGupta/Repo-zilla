@@ -1,0 +1,2 @@
+.bar { padding-top: var(--s5); }
+@media (max-width: 640px) { .bar { padding-top: var(--s4); } }

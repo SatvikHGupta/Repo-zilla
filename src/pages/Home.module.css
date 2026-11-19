@@ -1,0 +1,18 @@
+/* the hero is a centred column: a sentence, the search box, a few things to try. Nothing clips the search results that drop down under it. */
+.band { position: relative; }
+.hero { display: flex; flex-direction: column; align-items: center; gap: var(--s4); padding-block: clamp(36px, 8vw, 84px) var(--s8); text-align: center; }
+.title { max-width: 22ch; margin: 0; font-size: clamp(34px, 6vw, 56px); font-weight: 700; letter-spacing: -0.035em; line-height: 1.05; text-wrap: balance; }
+.lead { max-width: 58ch; margin: 0; color: var(--text-muted); font-size: clamp(16px, 2vw, 18px); line-height: 1.55; text-wrap: pretty; }
+.search { width: 100%; max-width: 720px; margin: var(--s2) auto 0; text-align: left; }
+.section { padding-block: var(--s8) 0; }
+.head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s5); }
+.head h2, .know h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.all { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; }
+.facts { margin: var(--s5) 0 0; color: var(--text-muted); font-size: 14px; }
+.chartSkeleton { aspect-ratio: 16 / 9; max-height: 420px; border-radius: var(--r-lg); background: var(--surface); opacity: 0.5; }
+.know { padding-bottom: var(--s6); }
+.know ul { display: grid; gap: var(--s2); margin: var(--s4) 0; padding-left: var(--s5); color: var(--text-muted); list-style: disc; }
+
+/* light mode: a warm accent tint at the top of the page that fades out, so the page is not one flat sheet of paper */
+:global(html[data-mode='light']) .band { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 11%, var(--bg)) 0%, color-mix(in srgb, var(--accent) 4%, var(--bg)) 70%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+:global(html[data-mode='light']) .section:not(.know) { padding-top: var(--s10); }

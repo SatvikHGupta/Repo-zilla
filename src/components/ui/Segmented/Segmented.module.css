@@ -1,0 +1,6 @@
+.group { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-sunken); max-width: 100%; }
+.opt { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-height: 32px; padding: 0 var(--s3); border: 0; border-radius: 7px; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 600; white-space: nowrap; transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+.opt:hover { color: var(--text); }
+.opt[aria-checked='true'] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--border-strong); }
+.sm .opt { min-height: 28px; padding: 0 var(--s2); font-size: 12.5px; }
+@media (pointer: coarse) { .opt { min-height: 40px; } }

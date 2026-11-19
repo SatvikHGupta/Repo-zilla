@@ -1,0 +1,9 @@
+.hero { display: flex; flex-direction: column; gap: var(--s6); padding-block: var(--s8) var(--s6); }
+.text { max-width: 62ch; }
+.title { margin: 0; font-size: clamp(30px, 4.6vw, 44px); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; }
+.tagline { margin: var(--s3) 0 0; color: var(--text-muted); font-size: 17px; line-height: 1.5; text-wrap: pretty; }
+.facts { margin: var(--s4) 0 0; font-size: 16px; line-height: 1.5; }
+.facts b { font-weight: 650; }
+.placeholder { min-height: 320px; border-radius: var(--r-lg); background: var(--surface); opacity: 0.5; }
+
+:global(html[data-mode='light']) .placeholder { box-shadow: var(--shadow-sm); }

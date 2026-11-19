@@ -1,0 +1,2 @@
+.try { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s2); }
+.tryLabel { margin-right: var(--s1); color: var(--text-muted); font-size: 13px; font-weight: 600; }

@@ -1,0 +1,62 @@
+# Ignore everything by default
+/*
+
+# Production website files
+!/.gitignore
+!/package.json
+!/package-lock.json
+!/index.html
+!/vite.config.js
+!/vercel.json
+!/README.md
+!/src/
+!/public/
+!/vite/
+
+# Environment files - exclude all
+.env
+.env.*
+
+# Exclude tests and development files
+*.test.*
+*.spec.*
+/src/test-support/
+/vite/secretScan.js
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+.vercel/
+.wrangler/
+
+# Local data, exports and temporary files
+*.zip
+*.gz
+*.ndjson
+*.bin
+*.log
+*.tsbuildinfo
+__pycache__/
+*.pyc
+
+# Local folders
+/notes/
+/handoff/
+/handoffs/
+/exports/
+/reports/
+/scripts/
+/tools/
+/temp/
+/tmp/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+/.vscode/
+.env
+.env.*

@@ -1,0 +1,9 @@
+.mark { flex: none; }
+.box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.z { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.draw .z { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s var(--ease) infinite; }
+@keyframes draw {
+  0% { stroke-dashoffset: 1; }
+  55%, 80% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}

@@ -1,0 +1,4 @@
+.panel { display: flex; flex-direction: column; gap: var(--s5); }
+.group { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; }
+.group > :global(*) { width: 100%; }
+.h { font-size: 13px; font-weight: 600; color: var(--text-muted); }

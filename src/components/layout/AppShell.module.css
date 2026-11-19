@@ -1,0 +1,3 @@
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; outline: none; }
+.skip { position: fixed; left: var(--s3); top: -48px; z-index: 300; padding: var(--s2) var(--s4); border-radius: var(--r-md); background: var(--accent); color: var(--accent-fg); font-weight: 600; text-decoration: none !important; transition: top var(--dur) var(--ease); }
+.skip:focus { top: var(--s3); }
