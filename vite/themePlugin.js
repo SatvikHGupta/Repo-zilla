@@ -5,6 +5,7 @@ import { MODES, ACCENTS, DEFAULTS, KEYS } from '../src/theme/registry.js';
 import { validate, buildCss, initScript } from '../src/theme/core.js';
 
 export default function themePlugin() {
+  let build = false;
   validate(MODES, ACCENTS);
   const css = buildCss(MODES, ACCENTS, DEFAULTS);
   const hash = createHash('sha256').update(css).digest('hex').slice(0, 8);
@@ -13,6 +14,7 @@ export default function themePlugin() {
   const serve = (body, type) => (req, res) => { res.setHeader('Content-Type', type); res.setHeader('Cache-Control', 'no-cache'); res.end(body); };
   return {
     name: 'rz-theme',
+    configResolved(config) { build = config.command === 'build'; },
     configureServer(server) { server.middlewares.use('/theme.css', serve(css, 'text/css; charset=utf-8')); server.middlewares.use('/theme-init.js', serve(script, 'text/javascript; charset=utf-8')); },
     configurePreviewServer(server) { server.middlewares.use('/theme.css', serve(css, 'text/css; charset=utf-8')); server.middlewares.use('/theme-init.js', serve(script, 'text/javascript; charset=utf-8')); },
     generateBundle() {
@@ -23,7 +25,8 @@ export default function themePlugin() {
       return [
         // a plain blocking script (not a module): it must run before the first paint
         { tag: 'script', attrs: { src: `/theme-init.js?v=${scriptHash}` }, injectTo: 'head-prepend' },
-        { tag: 'link', attrs: { rel: 'stylesheet', href: `/theme.css?v=${hash}` }, injectTo: 'head' },
+        // in the build the colours are part of the page itself (the CSP allows inline styles): one request less on every visit. In dev they stay a file.
+        build ? { tag: 'style', children: css, injectTo: 'head' } : { tag: 'link', attrs: { rel: 'stylesheet', href: `/theme.css?v=${hash}` }, injectTo: 'head' },
       ];
     },
   };

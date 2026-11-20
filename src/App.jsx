@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react';
+import { prefetchOnIntent } from './lib/prefetch.js';
 import { matchPath, Route, Routes, useLocation } from 'react-router-dom';
 import AppShell from './components/layout/AppShell.jsx';
 import PanelHost, { REPO_ROUTE } from './components/layout/PanelHost.jsx';
@@ -7,7 +8,7 @@ import NotFound from './pages/NotFound.jsx';
 import Loader from './components/ui/Loader/Loader.jsx';
 import { useScrollRestore } from './hooks/useScrollRestore.js';
 
-// the home page ships with the app; every other page is its own file, fetched when it is first needed and, a moment after the home page is up, in the background
+// the home page ships with the app; every other page is its own file, fetched when it is first needed or when someone points at a link to it
 const loaders = {
   search: () => import('./pages/Search.jsx'),
   domains: () => import('./pages/Domains.jsx'),
@@ -25,11 +26,6 @@ const Terms = lazy(loaders.terms);
 const Privacy = lazy(loaders.privacy);
 const Contact = lazy(loaders.contact);
 
-// when the browser is idle, the pages people go to next (search first) are already downloaded, so a click does not wait for a file
-function prefetchPages() {
-  const run = () => { for (const k of ['search', 'domains', 'domain']) loaders[k]().catch(() => {}); };
-  if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 4000 }); else setTimeout(run, 2000);
-}
 
 export default function App() {
   const location = useLocation();
@@ -37,7 +33,7 @@ export default function App() {
   const onRepo = !!matchPath(REPO_ROUTE, location.pathname);
   // a repo URL is an overlay: the page behind it is the one the user came from, or the search page when the link was opened directly
   const pageLocation = background || (onRepo ? { pathname: '/search', search: '', hash: '', state: null, key: 'repo-background' } : location);
-  useEffect(prefetchPages, []);
+  useEffect(() => prefetchOnIntent(loaders), []); // a page file is fetched when someone points at a link to it
   useScrollRestore(pageLocation); // new pages start at the top, Back / Forward restore the old position
 
   return (

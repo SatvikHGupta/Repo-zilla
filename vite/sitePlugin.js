@@ -1,3 +1,5 @@
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 // Link previews need absolute addresses (a chat app or a search engine cannot resolve "/og-image.png" on its own), so the picture, the canonical address and
 // the large Twitter card are added at build time from VITE_SITE_URL, the address the site is served from. Without it the page still works, with a text-only preview.
 
@@ -46,18 +48,43 @@ export function speedTags({ fonts = [], dataOrigin = '' }) {
   return tags;
 }
 
+// The pages worth indexing. Search, repository and domain-detail pages are left out on purpose (see public/robots.txt).
+export const SITEMAP_PATHS = ['/', '/domains', '/about', '/contact', '/terms', '/privacy'];
+
+export function sitemapXml(site) {
+  const urls = SITEMAP_PATHS.map((p) => `  <url><loc>${site}${p === '/' ? '/' : p}</loc></url>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+}
+
+// robots.txt gets the sitemap line once the site address is known (the line needs an absolute address); it is never added twice
+export function robotsWithSitemap(robots, site) {
+  if (/^Sitemap:/im.test(robots)) return robots;
+  return `${robots.replace(/\s*$/, '\n')}\nSitemap: ${site}/sitemap.xml\n`;
+}
+
 export default function sitePlugin() {
   let site = '';
   let dataOrigin = '';
+  let outDir = '';
+  let build = false;
   return {
     name: 'rz-site-meta',
     apply: 'build',
     configResolved(config) {
       try { const u = new URL(config.env.VITE_DATA_BASE || ''); if (u.protocol === 'https:') dataOrigin = u.origin; } catch { /* no data host set: nothing to connect to early */ }
       site = resolveSiteUrl(config.env, process.env);
+      build = config.command === 'build';
+      outDir = resolve(config.root, config.build.outDir);
       if (!site) { config.logger.warn('[site-meta] VITE_SITE_URL is not set: link previews will have no picture. Set it in .env.production to the address the site is served from (on Vercel it is found by itself).'); return; }
       const problem = checkSiteUrl(site);
       if (problem) throw new Error(`[site-meta] ${problem}`);
+    },
+    // after the build: sitemap.xml, and the Sitemap line in robots.txt (only when the site address is known)
+    closeBundle() {
+      if (!build || !site || checkSiteUrl(site)) return;
+      writeFileSync(resolve(outDir, 'sitemap.xml'), sitemapXml(site));
+      const robots = resolve(outDir, 'robots.txt');
+      if (existsSync(robots)) writeFileSync(robots, robotsWithSitemap(readFileSync(robots, 'utf8'), site));
     },
     transformIndexHtml: {
       order: 'post',
